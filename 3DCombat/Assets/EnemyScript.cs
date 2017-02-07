@@ -25,6 +25,11 @@ public class EnemyScript : PlayerScript {
         StartCoroutine("AttackCombo");
         StartCoroutine("Walk");
         HumanPlayer = false;
+        BlockLeft.SetActive(false);
+        BlockRight.SetActive(false);
+        BlockUp.SetActive(false);
+        BlockDown.SetActive(false);
+        PDirection = Direction.Up;
     }
 	
 	// Update is called once per frame
@@ -40,16 +45,30 @@ public class EnemyScript : PlayerScript {
         if (Hit)
         {
             PState = State.Hit;
+            m_MoveSpeedMultiplier = m_MoveNormal;
+            BlockUp.SetActive(false);
+            BlockDown.SetActive(false);
+            BlockLeft.SetActive(false);
+            BlockRight.SetActive(false);
+            if (gameObject.CompareTag("Enemy"))
+            {
+                BlockUp.SetActive(false);
+                BlockDown.SetActive(false);
+                BlockLeft.SetActive(false);
+                BlockRight.SetActive(false);
+            }
+           
+            AnimationControl.Play("hit 1");
             foreach (AnimationState state in AnimationControl)
             {
-                state.speed = 0.6f;
+                state.speed = 0.5f;
             }
-            AnimationControl.Play("hit 1");
             StopAllCoroutines();
             StartCoroutine("IsHit");
             h = 0;
             v = 0;
             StartCoroutine("Walk");
+            ActionCooldown = 3.0f;
             Hit = false;
 
 
@@ -61,7 +80,15 @@ public class EnemyScript : PlayerScript {
 
             if (ActionCooldown <= 0.0f)
             {
+                m_MoveSpeedMultiplier = m_MoveNormal;
+                BlockUp.SetActive(false);
+                BlockDown.SetActive(false);
+                BlockLeft.SetActive(false);
+                BlockRight.SetActive(false);
                 RState = Random.Range(0, 8);
+                //Debug only!
+               // if (RState == 4)
+                //    RState--;
                 //Debug.Log("Switching to state" + RState);
                 switch (RState)
                 {
@@ -113,14 +140,25 @@ public class EnemyScript : PlayerScript {
                         v = 0;
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                         {
+                            StopAllCoroutines();
+                            StartCoroutine(AttackCombo());
+                            StartCoroutine("Walk");
+
+                            
+                            PState = State.Attack1;
                             AnimationControl.Play("attack 1");
+                            AnimationControl["attack 1"].speed = 0.7f;
+                            SwordAnim.speed = 0.7f;
+
+
                             SwordAnim.Play("attack 1");
+                            ContinueCombo = false;
                             if (PState == State.Block)
                                 Blocking = false;
                             PState = State.Attack1;
 
 
-                            m_MoveSpeedMultiplier = 1.0f;
+                            //m_MoveSpeedMultiplier = 1.0f;
                         }
                         
                         ActionCooldown = 0.6f;
@@ -130,14 +168,19 @@ public class EnemyScript : PlayerScript {
                         v = 0;
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                         {
+                            StopAllCoroutines();
+                            StartCoroutine(AttackCombo());
+                            StartCoroutine("Walk");
                             AnimationControl.Play("attack 2");
+                            AnimationControl["attack 2"].speed = 0.7f;
+                            SwordAnim.speed = 0.7f;
                             SwordAnim.Play("attack 2");
                             if (PState == State.Block)
                                 Blocking = false;
                             PState = State.Attack2;
 
 
-                            m_MoveSpeedMultiplier = 1.0f;
+                            //m_MoveSpeedMultiplier = 1.0f;
                         }
 
                         ActionCooldown = 0.6f;
@@ -147,14 +190,19 @@ public class EnemyScript : PlayerScript {
                         v = 0;
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                         {
+                            StopAllCoroutines();
+                            StartCoroutine(AttackCombo());
+                            StartCoroutine("Walk");
                             AnimationControl.Play("attack 3");
+                            AnimationControl["attack 3"].speed = 0.7f;
+                            SwordAnim.speed = 0.7f;
                             SwordAnim.Play("attack 3");
                             if (PState == State.Block)
                                 Blocking = false;
                             PState = State.Attack3;
 
 
-                            m_MoveSpeedMultiplier = 1.0f;
+                            //m_MoveSpeedMultiplier = 1.0f;
                         }
 
                         ActionCooldown = 0.6f;
@@ -164,14 +212,20 @@ public class EnemyScript : PlayerScript {
                         v = 0;
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                         {
-                            AnimationControl.Play("attack 4");
-                            SwordAnim.Play("attack 4");
+                            StopAllCoroutines();
+                            StartCoroutine(AttackCombo());
+                            StartCoroutine("Walk");
+                            AnimationControl.Play("attack 6");
+                            SwordAnim.Play("attack 3");
+                            AnimationControl["attack 6"].speed = 0.7f;
+                            SwordAnim.speed = 0.7f;
+                            AnimationControl["attack 6"].time = 0.5f;
                             if (PState == State.Block)
                                 Blocking = false;
                             PState = State.Attack4;
 
 
-                            m_MoveSpeedMultiplier = 1.0f;
+                            //m_MoveSpeedMultiplier = 1.0f;
                         }
 
                         ActionCooldown = 0.6f;
@@ -185,8 +239,9 @@ public class EnemyScript : PlayerScript {
                             PState = State.Block;
                             AnimationControl.Play("block");
                             StartCoroutine("PauseAnimation");
+                            BlockUp.SetActive(true);
 
-                            m_MoveSpeedMultiplier = 1.0f;
+                            m_MoveSpeedMultiplier = m_MoveBlock;
                         }
                         PState = State.Block;
                         ActionCooldown = 2.0f;
@@ -212,15 +267,12 @@ public class EnemyScript : PlayerScript {
     {
         if (col.tag == "PlayerSword")
         {
-            if (Invincibility <= 0.0f && PState != State.Block)
+            if (Invincibility <= 0.0f)
             {
 
                 Hit = true;
             }
-            if(PState == State.Block)
-            {
-                PScript.Hit = true;
-            }
+            
            // Destroy(col.gameObject);
         }
     }
@@ -239,5 +291,18 @@ public class EnemyScript : PlayerScript {
 
 
 
+    }
+    protected override IEnumerator IsHit()
+    {
+
+        yield return new WaitForSeconds(0.8f);
+        PState = State.Idle;
+        foreach (AnimationState state in AnimationControl)
+        {
+            state.speed = 1.0f;
+        }
+        StartCoroutine("AttackCombo");
+        ActionCooldown = 0.01f;
+        yield return null;
     }
 }

@@ -52,7 +52,13 @@ public class PlayerScript : MonoBehaviour
     protected float DebugTimer = 0.0f;
     public float Invincibility = 0.0f;
 
-    protected float h, v;
+    [SerializeField]
+    protected float m_MoveBlock = 2.0f;
+    [SerializeField]
+    protected float m_MoveNormal = 4.0f;
+
+
+    protected float h, v, h2, v2;
 
     public enum State { Idle, Walk, Jump, Attack, Block, Hit, Attack1, Attack2, Attack3, Attack4 };
     public enum Direction { Left, Right, Up, Down };
@@ -62,6 +68,8 @@ public class PlayerScript : MonoBehaviour
     protected Direction PDirection;
     [SerializeField]
     protected Text StateText;
+    [SerializeField]
+    protected Text DirectionText;
 
     public GameObject Enemy;
 
@@ -72,6 +80,19 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
 
     public bool Warband = false;
+    public GameObject Camera;
+
+    [SerializeField]
+    protected GameObject BlockLeft;
+
+    [SerializeField]
+    protected GameObject BlockRight;
+
+    [SerializeField]
+    protected GameObject BlockUp;
+
+    [SerializeField]
+    protected GameObject BlockDown;
     void Start()
     {
         PState = State.Idle;
@@ -82,9 +103,14 @@ public class PlayerScript : MonoBehaviour
         m_CapsuleHeight = m_Capsule.height;
         m_CapsuleCenter = m_Capsule.center;
         AnimationControl = GetComponentInChildren<Animation>();
-        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX  | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         StartCoroutine("AttackCombo");
+        BlockLeft.SetActive(false);
+        BlockRight.SetActive(false);
+        BlockUp.SetActive(false);
+        BlockDown.SetActive(false);
+        PDirection = Direction.Up;
     }
 
     // Update is called once per frame
@@ -100,6 +126,7 @@ public class PlayerScript : MonoBehaviour
     }
     void FixedUpdate()
     {
+        /*
         if (Warband)
         {
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
@@ -119,14 +146,23 @@ public class PlayerScript : MonoBehaviour
                 PDirection = Direction.Right;
             }
         }
+        */
 
-        StateText.text = PState.ToString();
+        //StateText.text = PState.ToString();
+        DirectionText.text = PDirection.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
 
         if (Hit)
         {
             PState = State.Hit;
+            if (gameObject.CompareTag("Player"))
+            {
+                BlockUp.SetActive(false);
+                BlockDown.SetActive(false);
+                BlockLeft.SetActive(false);
+                BlockRight.SetActive(false);
+            }
             AnimationControl.Play("hit 1");
             foreach (AnimationState state in AnimationControl)
             {
@@ -142,12 +178,41 @@ public class PlayerScript : MonoBehaviour
         {
             h = CrossPlatformInputManager.GetAxis("Horizontal");
             v = CrossPlatformInputManager.GetAxis("Vertical");
+            h2 = 0;
+            v2 = 0;
 
+            h2 = CrossPlatformInputManager.GetAxisRaw("Horizontal");
+            v2 = CrossPlatformInputManager.GetAxisRaw("Vertical");
+
+            if (Warband)
+            {
+                if (v2>0)
+                {
+                    PDirection = Direction.Up;
+                }
+                if (v2<0)
+                {
+                    PDirection = Direction.Down;
+                }
+                if (h2<0)
+                {
+                    PDirection = Direction.Left;
+                }
+                if (h2>0)
+                {
+                    PDirection = Direction.Right;
+                }
+            }
+            StateText.text = PState.ToString();
             //Code to face enemy always, lock on
-           // m_Direction = Enemy.transform.position - transform.position;
+            // m_Direction = Enemy.transform.position - transform.position;
             //transform.rotation = Quaternion.LookRotation(m_Direction);
             // transform.rotation.eulerAngles.Set(0.0f,transform.rotation.eulerAngles.y, 0.0f);
-
+            /*
+            if(PState==State.Walk)
+            transform.rotation = Camera.transform.rotation;
+            */
+            //transform.rotation.eulerAngles.Set(0.0f, Camera.transform.rotation.eulerAngles.y, 0.0f);
 
             if (Input.GetButton("Fire2"))
             {
@@ -158,8 +223,26 @@ public class PlayerScript : MonoBehaviour
                     PState = State.Block;
                     AnimationControl.Play("block");
                     StartCoroutine("PauseAnimation");
+                    switch(PDirection)
+                    {
+                        case Direction.Up:
+                            BlockUp.SetActive(true);
 
-                    m_MoveSpeedMultiplier = 1.0f;
+                            break;
+                        case Direction.Down:
+                            BlockDown.SetActive(true);
+                            break;
+                        case Direction.Left:
+                            BlockLeft.SetActive(true);
+                            break;
+                        case Direction.Right:
+                            BlockRight.SetActive(true);
+                            break;
+                        default:
+                            BlockUp.SetActive(true);
+                            break;
+                    }
+                    m_MoveSpeedMultiplier = m_MoveBlock;
                 }
 
             }
@@ -170,7 +253,12 @@ public class PlayerScript : MonoBehaviour
                 if (PState == State.Block)
                 {
                     PState = State.Idle;
-                    m_MoveSpeedMultiplier = 2.0f;
+                    m_MoveSpeedMultiplier = m_MoveNormal;
+                    BlockUp.SetActive(false);
+                    BlockDown.SetActive(false);
+                    BlockLeft.SetActive(false);
+                    BlockRight.SetActive(false);
+
 
                 }
             }
@@ -179,6 +267,8 @@ public class PlayerScript : MonoBehaviour
                 DebugTimer = 0.0f;
                 if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                 {
+                    StopAllCoroutines();
+                    StartCoroutine(AttackCombo());
                     if (Warband)
                         WarbandAttack();
 
@@ -191,7 +281,7 @@ public class PlayerScript : MonoBehaviour
                         PState = State.Attack1;
 
 
-                        m_MoveSpeedMultiplier = 1.0f;
+                        //m_MoveSpeedMultiplier = 1.0f;
                     }
                 }
                 else if (PState == State.Attack1 && !Blocking)
@@ -244,7 +334,8 @@ public class PlayerScript : MonoBehaviour
         }
 
         // v = 1.0f;
-        m_PlayerForward = this.transform.forward;//Vector3.Scale(this.transform.forward, new Vector3(1, 0, 1)).normalized;
+        m_PlayerForward = this.transform.forward;
+        Vector3.Scale(transform.forward, new Vector3(1, 0, 1));
         m_Move = v * m_PlayerForward + h * this.transform.right;
         // Debug.Log(m_Move);
         Move(m_Move, false, m_Jump);
@@ -346,6 +437,8 @@ public class PlayerScript : MonoBehaviour
         {
             if (PState == State.Attack1)
             {
+                AnimationControl["attack 1"].speed = 0.7f;
+                SwordAnim.speed = 0.7f;
                 //Debug.Log("Waiting at attack1");
                 while (AnimationControl.IsPlaying("attack 1"))
                     yield return new WaitForFixedUpdate();
@@ -357,7 +450,7 @@ public class PlayerScript : MonoBehaviour
                         if (!Blocking)
                         {
                             PState = State.Idle;
-                            m_MoveSpeedMultiplier = 2.0f;
+                            //m_MoveSpeedMultiplier = 2.0f;
                         }
                         else
                         {
@@ -386,7 +479,8 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack2)
             {
                 // Debug.Log("Waiting at attack2");
-
+                AnimationControl["attack 2"].speed = 0.7f;
+                SwordAnim.speed = 0.7f;
                 while (AnimationControl.IsPlaying("attack 2"))
                     yield return new WaitForFixedUpdate();
                 //yield return new WaitForSeconds(AttackTime);
@@ -399,7 +493,7 @@ public class PlayerScript : MonoBehaviour
                         if (!Blocking)
                         {
                             PState = State.Idle;
-                            m_MoveSpeedMultiplier = 2.0f;
+                            //m_MoveSpeedMultiplier = 2.0f;
                         }
                         else
                         {
@@ -427,6 +521,8 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack3)
             {
                 //Debug.Log("Waiting at attack3");
+                AnimationControl["attack 3"].speed = 0.7f;
+                SwordAnim.speed = 0.7f;
                 while (AnimationControl.IsPlaying("attack 3"))
                     yield return new WaitForFixedUpdate();
                 // yield return new WaitForSeconds(AttackTime);
@@ -437,7 +533,7 @@ public class PlayerScript : MonoBehaviour
                     if (!Blocking)
                     {
                         PState = State.Idle;
-                        m_MoveSpeedMultiplier = 2.0f;
+                        //m_MoveSpeedMultiplier = 2.0f;
                     }
                     else
                     {
@@ -455,11 +551,13 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack4)
             {
                 //Debug.Log("Coroutine attack 4");
+                AnimationControl["attack 6"].speed = 0.7f;
+                SwordAnim.speed = 0.7f;
                 while (AnimationControl.IsPlaying("attack 6") && AnimationControl["attack 6"].time <=1.0)
                 {
                     yield return new WaitForFixedUpdate();
                 }
-                // yield return new WaitForSeconds(AttackTime);
+                 yield return new WaitForSeconds(0.5f);
 
                 //                if (!AnimationControl.IsPlaying("attack 3"))
                 if (Warband && !ContinueCombo)
@@ -467,7 +565,7 @@ public class PlayerScript : MonoBehaviour
                     if (!Blocking)
                     {
                         PState = State.Idle;
-                        m_MoveSpeedMultiplier = 2.0f;
+                        //m_MoveSpeedMultiplier = 2.0f;
                     }
                     else
                     {
@@ -495,7 +593,7 @@ public class PlayerScript : MonoBehaviour
             AnimationControl.Stop();
         yield return null;
     }
-    protected IEnumerator IsHit()
+    virtual protected IEnumerator IsHit()
     {
         yield return new WaitForSeconds(0.8f);
         PState = State.Idle;
@@ -512,16 +610,18 @@ public class PlayerScript : MonoBehaviour
     {
         if (col.tag == "EnemySword")
         {
-            if (Invincibility <= 0.0f && PState != State.Block)
+            if (Invincibility <= 0.0f)
             {
 
                 Hit = true;
             }
+            /*
             if (PState == State.Block)
             {
                 EScript.Hit = true;
                 //EScript.StartCoroutine("")
             }
+            */
             //Destroy(col.gameObject);
         }
     }
@@ -541,18 +641,27 @@ public class PlayerScript : MonoBehaviour
                     PState = State.Attack4;
                     AnimationControl.Play("attack 6");
                     SwordAnim.Play("attack 3");
+                    AnimationControl["attack 6"].speed = 0.7f;
+                    SwordAnim.speed = 0.7f;
                     AnimationControl["attack 6"].time = 0.5f;
                     ContinueCombo = false;
                     break;
                 case Direction.Down:
                     PState = State.Attack3;
                     AnimationControl.Play("attack 3");
+                    AnimationControl["attack 3"].speed = 0.7f;
+                    SwordAnim.speed = 0.7f;
+
                     SwordAnim.Play("attack 3");
                     ContinueCombo = false;
                     break;
                 case Direction.Left:
                     PState = State.Attack2;
                     AnimationControl.Play("attack 2");
+                    AnimationControl["attack 2"].speed = 0.7f;
+                    SwordAnim.speed = 0.7f;
+
+
                     SwordAnim.Play("attack 2");
                     ContinueCombo = false;
 
@@ -560,6 +669,10 @@ public class PlayerScript : MonoBehaviour
                 case Direction.Right:
                     PState = State.Attack1;
                     AnimationControl.Play("attack 1");
+                    AnimationControl["attack 1"].speed = 0.7f;
+                    SwordAnim.speed = 0.7f;
+
+
                     SwordAnim.Play("attack 1");
                     ContinueCombo = false;
 
