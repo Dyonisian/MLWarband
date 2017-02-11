@@ -1,0 +1,1 @@
+Warning: None triangle mesh: Paladin_J_Nordstrom_Shield (file: 'E:\HW\Abertay\Honours Project\Application\3DRepo\3DCombat\Assets\NewAnim\Paladin_w_Prop_J_Nordstrom.fbx') [ (line 0)]

@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     protected float m_GroundCheckDistance = 0.1f;
 
+    [SerializeField]
     protected Rigidbody m_Rigidbody;
     //Animator m_Animator;
     protected bool m_IsGrounded;
@@ -35,6 +36,8 @@ public class PlayerScript : MonoBehaviour
     protected Vector3 m_GroundNormal;
     protected float m_CapsuleHeight;
     protected Vector3 m_CapsuleCenter;
+    [SerializeField]
+
     protected CapsuleCollider m_Capsule;
     protected bool m_Crouching;
     protected bool m_Jump;
@@ -42,7 +45,9 @@ public class PlayerScript : MonoBehaviour
     protected bool Blocking = false;
     public bool Hit = false;
     protected Vector3 m_PlayerForward, m_Move, m_Direction;
-    protected Animation AnimationControl;
+    [SerializeField]
+
+    protected Animator AnimationControl;
 
 
     public Animator SwordAnim;
@@ -98,11 +103,11 @@ public class PlayerScript : MonoBehaviour
         PState = State.Idle;
         HumanPlayer = true;
         //m_Animator = GetComponent<Animator>();
-        m_Rigidbody = GetComponent<Rigidbody>();
-        m_Capsule = GetComponent<CapsuleCollider>();
+        //m_Rigidbody = GetComponent<Rigidbody>();
+        //m_Capsule = GetComponent<CapsuleCollider>();
         m_CapsuleHeight = m_Capsule.height;
         m_CapsuleCenter = m_Capsule.center;
-        AnimationControl = GetComponentInChildren<Animation>();
+        //AnimationControl = GetComponentInChildren<Animation>();
         m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX  | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         StartCoroutine("AttackCombo");
@@ -163,11 +168,7 @@ public class PlayerScript : MonoBehaviour
                 BlockLeft.SetActive(false);
                 BlockRight.SetActive(false);
             }
-            AnimationControl.Play("hit 1");
-            foreach (AnimationState state in AnimationControl)
-            {
-                state.speed = 0.5f;
-            }
+            AnimationControl.Play("Hit");
             StopAllCoroutines();
             StartCoroutine("IsHit");
             Hit = false;
@@ -221,7 +222,7 @@ public class PlayerScript : MonoBehaviour
                 if (PState == State.Idle || PState == State.Walk)
                 {
                     PState = State.Block;
-                    AnimationControl.Play("block");
+                    AnimationControl.Play("Block");
                     StartCoroutine("PauseAnimation");
                     switch(PDirection)
                     {
@@ -274,8 +275,8 @@ public class PlayerScript : MonoBehaviour
 
                     else
                     {
-                        AnimationControl.Play("attack 1");
-                        SwordAnim.Play("attack 1");
+                        AnimationControl.Play("Attack1");
+                        SwordAnim.Play("Attack1");
                         if (PState == State.Block)
                             Blocking = false;
                         PState = State.Attack1;
@@ -309,18 +310,18 @@ public class PlayerScript : MonoBehaviour
             {
                 if (v == 0 && h == 0)
                 {
-                    AnimationControl.Play("ready");
+                    AnimationControl.Play("Idle");
 
                     PState = State.Idle;
                 }
                 else
                 {
                     if (h == 0.0f && v >= 0.0f)
-                        AnimationControl.Play("run");
+                        AnimationControl.Play("Run");
                     else if (h < 0.0f)
-                        AnimationControl.Play("strafe left");
+                        AnimationControl.Play("Strafe");
                     else
-                        AnimationControl.Play("strafe right");
+                        AnimationControl.Play("Strafe");
 
 
                     PState = State.Walk;
@@ -437,10 +438,10 @@ public class PlayerScript : MonoBehaviour
         {
             if (PState == State.Attack1)
             {
-                AnimationControl["attack 1"].speed = 0.7f;
+                
                 SwordAnim.speed = 0.7f;
                 //Debug.Log("Waiting at attack1");
-                while (AnimationControl.IsPlaying("attack 1"))
+               // while (AnimationControl.IsPlaying("attack 1"))
                     yield return new WaitForFixedUpdate();
                 //yield return new WaitForSeconds(AttackTime);
                 //if (!AnimationControl.IsPlaying("attack 1"))
@@ -479,9 +480,9 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack2)
             {
                 // Debug.Log("Waiting at attack2");
-                AnimationControl["attack 2"].speed = 0.7f;
+                //AnimationControl["attack 2"].speed = 0.7f;
                 SwordAnim.speed = 0.7f;
-                while (AnimationControl.IsPlaying("attack 2"))
+               // while (AnimationControl.IsPlaying("attack 2"))
                     yield return new WaitForFixedUpdate();
                 //yield return new WaitForSeconds(AttackTime);
                 //Debug.Log("Not waiting!");
@@ -521,9 +522,9 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack3)
             {
                 //Debug.Log("Waiting at attack3");
-                AnimationControl["attack 3"].speed = 0.7f;
+                //AnimationControl["attack 3"].speed = 0.7f;
                 SwordAnim.speed = 0.7f;
-                while (AnimationControl.IsPlaying("attack 3"))
+                //while (AnimationControl.IsPlaying("attack 3"))
                     yield return new WaitForFixedUpdate();
                 // yield return new WaitForSeconds(AttackTime);
 
@@ -551,9 +552,9 @@ public class PlayerScript : MonoBehaviour
             if (PState == State.Attack4)
             {
                 //Debug.Log("Coroutine attack 4");
-                AnimationControl["attack 6"].speed = 0.7f;
+               // AnimationControl["attack 6"].speed = 0.7f;
                 SwordAnim.speed = 0.7f;
-                while (AnimationControl.IsPlaying("attack 6") && AnimationControl["attack 6"].time <=1.0)
+                //while (AnimationControl.IsPlaying("attack 6") && AnimationControl["attack 6"].time <=1.0)
                 {
                     yield return new WaitForFixedUpdate();
                 }
@@ -597,10 +598,7 @@ public class PlayerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(0.8f);
         PState = State.Idle;
-        foreach (AnimationState state in AnimationControl)
-        {
-            state.speed = 1.0f;
-        }
+       
         StartCoroutine("AttackCombo");
 
         yield return null;
@@ -641,15 +639,15 @@ public class PlayerScript : MonoBehaviour
                     PState = State.Attack4;
                     AnimationControl.Play("attack 6");
                     SwordAnim.Play("attack 3");
-                    AnimationControl["attack 6"].speed = 0.7f;
+                    //AnimationControl["attack 6"].speed = 0.7f;
                     SwordAnim.speed = 0.7f;
-                    AnimationControl["attack 6"].time = 0.5f;
+                    //AnimationControl["attack 6"].time = 0.5f;
                     ContinueCombo = false;
                     break;
                 case Direction.Down:
                     PState = State.Attack3;
                     AnimationControl.Play("attack 3");
-                    AnimationControl["attack 3"].speed = 0.7f;
+                    //AnimationControl["attack 3"].speed = 0.7f;
                     SwordAnim.speed = 0.7f;
 
                     SwordAnim.Play("attack 3");
@@ -658,7 +656,7 @@ public class PlayerScript : MonoBehaviour
                 case Direction.Left:
                     PState = State.Attack2;
                     AnimationControl.Play("attack 2");
-                    AnimationControl["attack 2"].speed = 0.7f;
+                    //AnimationControl["attack 2"].speed = 0.7f;
                     SwordAnim.speed = 0.7f;
 
 
@@ -668,8 +666,8 @@ public class PlayerScript : MonoBehaviour
                     break;
                 case Direction.Right:
                     PState = State.Attack1;
-                    AnimationControl.Play("attack 1");
-                    AnimationControl["attack 1"].speed = 0.7f;
+                    AnimationControl.Play("standing_melee_attack_backhand");
+                    //AnimationControl["attack 1"].speed = 0.7f;
                     SwordAnim.speed = 0.7f;
 
 
