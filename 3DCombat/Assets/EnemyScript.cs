@@ -19,7 +19,7 @@ public class EnemyScript : PlayerScript {
         m_Capsule = GetComponent<CapsuleCollider>();
         m_CapsuleHeight = m_Capsule.height;
         m_CapsuleCenter = m_Capsule.center;
-        AnimationControl = GetComponentInChildren<Animation>();
+        AnimationControl = GetComponent<Animator>();
         m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         StartCoroutine("AttackCombo");
@@ -59,10 +59,7 @@ public class EnemyScript : PlayerScript {
             }
            
             AnimationControl.Play("hit 1");
-            foreach (AnimationState state in AnimationControl)
-            {
-                state.speed = 0.5f;
-            }
+           
             StopAllCoroutines();
             StartCoroutine("IsHit");
             h = 0;
@@ -147,7 +144,7 @@ public class EnemyScript : PlayerScript {
                             
                             PState = State.Attack1;
                             AnimationControl.Play("attack 1");
-                            AnimationControl["attack 1"].speed = 0.7f;
+                            //AnimationControl["attack 1"].speed = 0.7f;
                             SwordAnim.speed = 0.7f;
 
 
@@ -172,7 +169,7 @@ public class EnemyScript : PlayerScript {
                             StartCoroutine(AttackCombo());
                             StartCoroutine("Walk");
                             AnimationControl.Play("attack 2");
-                            AnimationControl["attack 2"].speed = 0.7f;
+                            //AnimationControl["attack 2"].speed = 0.7f;
                             SwordAnim.speed = 0.7f;
                             SwordAnim.Play("attack 2");
                             if (PState == State.Block)
@@ -194,7 +191,7 @@ public class EnemyScript : PlayerScript {
                             StartCoroutine(AttackCombo());
                             StartCoroutine("Walk");
                             AnimationControl.Play("attack 3");
-                            AnimationControl["attack 3"].speed = 0.7f;
+                           // AnimationControl["attack 3"].speed = 0.7f;
                             SwordAnim.speed = 0.7f;
                             SwordAnim.Play("attack 3");
                             if (PState == State.Block)
@@ -217,9 +214,9 @@ public class EnemyScript : PlayerScript {
                             StartCoroutine("Walk");
                             AnimationControl.Play("attack 6");
                             SwordAnim.Play("attack 3");
-                            AnimationControl["attack 6"].speed = 0.7f;
+                           // AnimationControl["attack 6"].speed = 0.7f;
                             SwordAnim.speed = 0.7f;
-                            AnimationControl["attack 6"].time = 0.5f;
+                            //AnimationControl["attack 6"].time = 0.5f;
                             if (PState == State.Block)
                                 Blocking = false;
                             PState = State.Attack4;
@@ -297,10 +294,7 @@ public class EnemyScript : PlayerScript {
 
         yield return new WaitForSeconds(0.8f);
         PState = State.Idle;
-        foreach (AnimationState state in AnimationControl)
-        {
-            state.speed = 1.0f;
-        }
+        
         StartCoroutine("AttackCombo");
         ActionCooldown = 0.01f;
         yield return null;
