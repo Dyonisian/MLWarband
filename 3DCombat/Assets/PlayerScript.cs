@@ -110,7 +110,6 @@ public class PlayerScript : MonoBehaviour
         //AnimationControl = GetComponentInChildren<Animation>();
         m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX  | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
-        StartCoroutine("AttackCombo");
         BlockLeft.SetActive(false);
         BlockRight.SetActive(false);
         BlockUp.SetActive(false);
@@ -157,7 +156,31 @@ public class PlayerScript : MonoBehaviour
         DirectionText.text = PDirection.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
-
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack4") )
+        {
+            //PState = State.Idle;
+            AnimationControl.SetBool("Attack4", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
+        {
+            //PState = State.Idle;
+            AnimationControl.SetBool("Attack3", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
+        {
+            //PState = State.Idle;
+            AnimationControl.SetBool("Attack2", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+        {
+            //PState = State.Idle;
+            AnimationControl.SetBool("Attack1", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.01f && !AnimationControl.IsInTransition(0))
+        {
+            PState = State.Idle;
+        }
+        
         if (Hit)
         {
             PState = State.Hit;
@@ -269,7 +292,6 @@ public class PlayerScript : MonoBehaviour
                 if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
                 {
                     StopAllCoroutines();
-                    StartCoroutine(AttackCombo());
                     if (Warband)
                         WarbandAttack();
 
@@ -316,13 +338,22 @@ public class PlayerScript : MonoBehaviour
                 }
                 else
                 {
-                    if (h == 0.0f && v >= 0.0f)
-                        AnimationControl.Play("Run");
-                    else if (h < 0.0f)
-                        AnimationControl.Play("Strafe");
+                    
+                    if (Mathf.Abs(v) > Mathf.Abs(h))
+                    {
+                        if (v > 0)
+                            AnimationControl.Play("Run");
+                        else
+                            AnimationControl.Play("BackPedal");
+                    }
                     else
-                        AnimationControl.Play("Strafe");
-
+                    {
+                        if (h > 0)
+                            AnimationControl.Play("StrafeRight");
+                        else
+                            AnimationControl.Play("StrafeLeft");
+                    }
+                        
 
                     PState = State.Walk;
                 }
@@ -445,6 +476,7 @@ public class PlayerScript : MonoBehaviour
                     yield return new WaitForFixedUpdate();
                 //yield return new WaitForSeconds(AttackTime);
                 //if (!AnimationControl.IsPlaying("attack 1"))
+                
                 {
                     if (!ContinueCombo)
                     {
@@ -599,7 +631,6 @@ public class PlayerScript : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         PState = State.Idle;
        
-        StartCoroutine("AttackCombo");
 
         yield return null;
     }
@@ -636,42 +667,42 @@ public class PlayerScript : MonoBehaviour
             switch (PDirection)
             {
                 case Direction.Up:
-                    PState = State.Attack4;
-                    AnimationControl.Play("attack 6");
-                    SwordAnim.Play("attack 3");
+                    PState = State.Attack3;
+                    AnimationControl.SetBool("Attack3",true);
+                   // SwordAnim.Play("attack 3");
                     //AnimationControl["attack 6"].speed = 0.7f;
-                    SwordAnim.speed = 0.7f;
+                   // SwordAnim.speed = 0.7f;
                     //AnimationControl["attack 6"].time = 0.5f;
                     ContinueCombo = false;
                     break;
                 case Direction.Down:
-                    PState = State.Attack3;
-                    AnimationControl.Play("attack 3");
+                    PState = State.Attack4;
+                    AnimationControl.SetBool("Attack4", true);
                     //AnimationControl["attack 3"].speed = 0.7f;
-                    SwordAnim.speed = 0.7f;
+                    // SwordAnim.speed = 0.7f;
 
-                    SwordAnim.Play("attack 3");
+                    //  SwordAnim.Play("attack 3");
                     ContinueCombo = false;
                     break;
                 case Direction.Left:
                     PState = State.Attack2;
-                    AnimationControl.Play("attack 2");
+                    AnimationControl.SetBool("Attack2", true);
                     //AnimationControl["attack 2"].speed = 0.7f;
-                    SwordAnim.speed = 0.7f;
+                    // SwordAnim.speed = 0.7f;
 
 
-                    SwordAnim.Play("attack 2");
+                    // SwordAnim.Play("attack 2");
                     ContinueCombo = false;
 
                     break;
                 case Direction.Right:
                     PState = State.Attack1;
-                    AnimationControl.Play("standing_melee_attack_backhand");
+                    AnimationControl.SetBool("Attack1", true);
                     //AnimationControl["attack 1"].speed = 0.7f;
-                    SwordAnim.speed = 0.7f;
+                    // SwordAnim.speed = 0.7f;
 
 
-                    SwordAnim.Play("attack 1");
+                   // SwordAnim.Play("Attack1");
                     ContinueCombo = false;
 
                     break;

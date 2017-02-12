@@ -23,7 +23,7 @@ public class SwordScript : MonoBehaviour {
     {
         if (PScript.GetState() == PlayerScript.State.Attack1 || PScript.GetState() == PlayerScript.State.Attack2 || PScript.GetState() == PlayerScript.State.Attack3 || PScript.GetState() == PlayerScript.State.Attack4)
         {
-            if (transform.parent.parent.tag == "Player")
+            if (transform.root.CompareTag ("Player"))
             {
                 if (col.CompareTag("Enemy"))
                 {
