@@ -69,7 +69,7 @@ public class PlayerScript : MonoBehaviour
     public enum Direction { Left, Right, Up, Down };
 
 
-    protected State PState;
+    public State PState;
     protected Direction PDirection;
     [SerializeField]
     protected Text StateText;
@@ -156,11 +156,17 @@ public class PlayerScript : MonoBehaviour
             PState = State.Attack1;
             AnimationControl.SetBool("Attack1", false);
         }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.01f && !AnimationControl.IsInTransition(0))
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
         {
             PState = State.Idle;
+            if (AnimationControl.GetBool("Hit"))
+            {
+                AnimationControl.SetBool("Hit", false);
+                Invincibility = 0.2f;
+            }
+
         }
-        
+
         if (Hit)
         {
             PState = State.Hit;
@@ -278,36 +284,24 @@ public class PlayerScript : MonoBehaviour
                 {
                     StopAllCoroutines();
                     if (Warband)
+                    {
                         WarbandAttack();
-
+                    }
                     else
                     {
                         AnimationControl.Play("Attack1");
                         SwordAnim.Play("Attack1");
                         if (PState == State.Block)
+                        {
                             Blocking = false;
+                        }
                         PState = State.Attack1;
 
 
                         //m_MoveSpeedMultiplier = 1.0f;
                     }
                 }
-                else if (PState == State.Attack1 && !Blocking)
-                {
-                    ContinueCombo = true;
-                }
-                else if (PState == State.Attack2 && !Blocking)
-                {
-                    ContinueCombo = true;
-                }
-                else if (PState == State.Attack3 && !Blocking)
-                {
-                    ContinueCombo = true;
-                }
-                else if (PState == State.Attack4 && !Blocking)
-                {
-                    ContinueCombo = true;
-                }
+                
             }
 
 
@@ -344,7 +338,7 @@ public class PlayerScript : MonoBehaviour
                 }
             }
         }
-        else
+        else //hit state
         {
             h = 0;
             v = 0;
@@ -624,9 +618,10 @@ public class PlayerScript : MonoBehaviour
     {
         if (col.tag == "EnemySword")
         {
-            if (Invincibility <= 0.0f)
+            Debug.Log("Im Invincible!");
+            if (Invincibility <= 0.0f && (EScript.PState==State.Attack1|| EScript.PState == State.Attack2|| EScript.PState == State.Attack3|| EScript.PState == State.Attack4))
             {
-
+                Debug.Log("Im hit!");
                 Hit = true;
             }
             /*
@@ -650,33 +645,35 @@ public class PlayerScript : MonoBehaviour
         AnimationControl.SetBool("Attack2", false);
         AnimationControl.SetBool("Attack1", false);
         if (!Warband)
+        {
             return;
+        }
         else
         {
             switch (PDirection)
             {
                 case Direction.Up:
                     PState = State.Attack3;
-                    AnimationControl.SetBool("Attack3",true);       
+                    AnimationControl.SetBool("Attack3", true);
                     ContinueCombo = false;
                     break;
                 case Direction.Down:
                     PState = State.Attack4;
                     AnimationControl.SetBool("Attack4", true);
-                    
+
                     ContinueCombo = false;
                     break;
                 case Direction.Left:
                     PState = State.Attack2;
                     AnimationControl.SetBool("Attack2", true);
-                   
+
                     ContinueCombo = false;
 
                     break;
                 case Direction.Right:
                     PState = State.Attack1;
                     AnimationControl.SetBool("Attack1", true);
-                   
+
                     ContinueCombo = false;
 
                     break;
