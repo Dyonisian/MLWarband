@@ -5,6 +5,7 @@ public class EnemyScript : PlayerScript {
     bool aAttack, aLeft, aRight, aForward, aBack, aJump, aBlock;
     bool InRange;
     float ActionCooldown;
+    bool SetOnce = false;
     int RState = 0;
     [SerializeField]
 
@@ -62,9 +63,20 @@ public class EnemyScript : PlayerScript {
             PState = State.Attack1;
             AnimationControl.SetBool("Attack1", false);
         }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.01f && !AnimationControl.IsInTransition(0))
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.IsInTransition(0))
         {
             PState = State.Idle;
+            if(SetOnce)
+            {
+                ActionCooldown = 0.0f;
+                SetOnce = false;
+            }
+            if (AnimationControl.GetBool("Hit"))
+            {
+                AnimationControl.SetBool("Hit", false);
+                Invincibility = 0.3f;
+            }
+
         }
 
         if (Hit)
@@ -104,13 +116,14 @@ public class EnemyScript : PlayerScript {
 
             if (ActionCooldown <= 0.0f)
             {
+                SetOnce = true;
                 AnimationControl.SetBool("Block", false);
                 m_MoveSpeedMultiplier = m_MoveNormal;
                 BlockUp.SetActive(false);
                 BlockDown.SetActive(false);
                 BlockLeft.SetActive(false);
                 BlockRight.SetActive(false);
-                RState = Random.Range(0, 8);
+                RState =  Random.Range(0, 8);
                 //Debug only!
                // if (RState == 4)
                 //    RState--;
@@ -198,7 +211,7 @@ public class EnemyScript : PlayerScript {
                             //m_MoveSpeedMultiplier = 1.0f;
                         }
                         
-                        ActionCooldown = 0.6f;
+                        ActionCooldown = 5.6f;
                         break;
                     case 4:
                         h = 0;
@@ -218,7 +231,7 @@ public class EnemyScript : PlayerScript {
                             //m_MoveSpeedMultiplier = 1.0f;
                         }
 
-                        ActionCooldown = 0.6f;
+                        ActionCooldown = 5.6f;
                         break;
                     case 5:
                         h = 0;
@@ -239,7 +252,7 @@ public class EnemyScript : PlayerScript {
                             //m_MoveSpeedMultiplier = 1.0f;
                         }
 
-                        ActionCooldown = 0.6f;
+                        ActionCooldown = 5.6f;
                         break;
                     case 6:
                         h = 0;
@@ -258,7 +271,7 @@ public class EnemyScript : PlayerScript {
                             //m_MoveSpeedMultiplier = 1.0f;
                         }
 
-                        ActionCooldown = 0.6f;
+                        ActionCooldown = 5.6f;
                         break;
                     //Block
                     case 7:
@@ -301,7 +314,7 @@ public class EnemyScript : PlayerScript {
     {
         if (col.tag == "PlayerSword")
         {
-            if (Invincibility <= 0.0f)
+            if (Invincibility <= 0.0f && (PScript.PState==State.Attack1 || PScript.PState == State.Attack2 || PScript.PState == State.Attack3 || PScript.PState == State.Attack4))
             {
 
                 Hit = true;

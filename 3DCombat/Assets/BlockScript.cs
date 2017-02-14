@@ -8,11 +8,11 @@ public class BlockScript : MonoBehaviour {
     public bool IsPlayer = true;
 	// Use this for initialization
 	void Start () {
-        if (transform.parent.parent.CompareTag("Player"))
+        if (transform.root.CompareTag("Player"))
             IsPlayer = true;
         else
             IsPlayer = false;
-        PScript = transform.parent.parent.GetComponent<PlayerScript>();
+        PScript = transform.root.GetComponent<PlayerScript>();
 	}
 	
 	// Update is called once per frame
@@ -21,10 +21,10 @@ public class BlockScript : MonoBehaviour {
 	}
     void OnTriggerEnter(Collider col)
     {
-        if(col.CompareTag("EnemySword")||col.CompareTag("PlayerSword"))
+        if((col.CompareTag("EnemySword")&&IsPlayer)    ||  (col.CompareTag("PlayerSword"))&&!IsPlayer)
         {
             if(EScript==null)
-            EScript = col.transform.parent.parent.GetComponent<PlayerScript>();
+            EScript = col.transform.root.GetComponent<PlayerScript>();
 
             EScript.Hit = true;
             PScript.Invincibility = 0.2f;
