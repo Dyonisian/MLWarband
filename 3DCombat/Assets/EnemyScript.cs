@@ -10,6 +10,17 @@ public class EnemyScript : PlayerScript {
     [SerializeField]
 
     PlayerScript PScript;
+
+    public bool IsSeeking = false;
+    Vector3 SeekDirection;
+
+    Quaternion TargetRotation, SeekRotation;
+
+    public float HitDistance;
+    public float CurrentDistance = 0.0f;
+    public bool CanHit = false;
+
+     bool SetACOnce = false;
     
 
 	// Use this for initialization
@@ -30,6 +41,7 @@ public class EnemyScript : PlayerScript {
         BlockUp.SetActive(false);
         BlockDown.SetActive(false);
         PDirection = Direction.Up;
+        HitDistance = 1.91f;
     }
 	
 	// Update is called once per frame
@@ -66,9 +78,12 @@ public class EnemyScript : PlayerScript {
         if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.IsInTransition(0))
         {
             PState = State.Idle;
+
             if(SetOnce)
             {
                 ActionCooldown = 0.0f;
+
+                SetACOnce = true;
                 SetOnce = false;
             }
             if (AnimationControl.GetBool("Hit"))
@@ -112,10 +127,25 @@ public class EnemyScript : PlayerScript {
         if (PState != State.Hit)
         {
             m_Direction = Enemy.transform.position - transform.position;
-            transform.rotation = Quaternion.LookRotation(m_Direction);
-
+            CurrentDistance = m_Direction.magnitude;
+            SeekRotation = Quaternion.LookRotation(m_Direction);
+            if (m_Direction.magnitude < HitDistance)
+            {
+                CanHit = true;
+                if (SetACOnce)
+                {
+                    ActionCooldown = 0.2f;
+                    SetACOnce = false;
+                }
+            }
+            else
+            {
+                CanHit = false;
+            }
+            Debug.Log("Changing rotation");
             if (ActionCooldown <= 0.0f)
             {
+                IsSeeking = true;
                 SetOnce = true;
                 AnimationControl.SetBool("Block", false);
                 m_MoveSpeedMultiplier = m_MoveNormal;
@@ -123,7 +153,35 @@ public class EnemyScript : PlayerScript {
                 BlockDown.SetActive(false);
                 BlockLeft.SetActive(false);
                 BlockRight.SetActive(false);
-                RState =  Random.Range(0, 8);
+               
+                RState =  Random.Range(0,101);
+
+                if(CanHit)
+                {
+                    if(RState>50)
+                    {
+                        RState = Random.Range(3, 7);
+                    }
+                    else if(RState>25)
+                    {
+                        RState = Random.Range(7, 11);
+                    }
+                    else
+                    {
+                        RState = 12;
+                    }
+                }
+                else
+                {
+                    if(RState>50)
+                    {
+                        RState = 11;
+                    }
+                    else
+                    {
+                        RState = Random.Range(0, 13);
+                    }
+                }
                 //Debug only!
                // if (RState == 4)
                 //    RState--;
@@ -143,7 +201,11 @@ public class EnemyScript : PlayerScript {
                         PState = State.Walk;
                         h = Random.Range(-1.0f, 1.0f);
                         v = Random.Range(-1.0f, 1.0f);
-
+                        Vector3 RandomTarget;
+                        RandomTarget.x = Random.Range(0, 100);
+                        RandomTarget.y = 0;
+                        RandomTarget.z = Random.Range(0, 100);
+                        TargetRotation = Quaternion.LookRotation(RandomTarget);
 
                         if (Mathf.Abs(v) > Mathf.Abs(h))
                         {
@@ -194,18 +256,18 @@ public class EnemyScript : PlayerScript {
                     case 3:
                         h = 0;
                         v = 0;
-                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
+                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
                             StopAllCoroutines();
                             StartCoroutine("Walk");
-
+                            if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
+                                Blocking = false;
 
                             PState = State.Attack1;
                             AnimationControl.SetBool("Attack1", true);
 
                             ContinueCombo = false;
-                            if (PState == State.Block)
-                                Blocking = false;
+                           
 
 
                             //m_MoveSpeedMultiplier = 1.0f;
@@ -216,16 +278,18 @@ public class EnemyScript : PlayerScript {
                     case 4:
                         h = 0;
                         v = 0;
-                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
+                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
                             StopAllCoroutines();                          
                             StartCoroutine("Walk");
+                            if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
+                                Blocking = false;
+
                             PState = State.Attack2;
                             AnimationControl.SetBool("Attack2", true);
 
                             ContinueCombo = false;
-                            if (PState == State.Block)
-                                Blocking = false;
+                            
 
 
                             //m_MoveSpeedMultiplier = 1.0f;
@@ -236,17 +300,18 @@ public class EnemyScript : PlayerScript {
                     case 5:
                         h = 0;
                         v = 0;
-                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
+                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
                             StopAllCoroutines();
                             
                             StartCoroutine("Walk");
+                            if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
+                                Blocking = false;
                             PState = State.Attack3;
                             AnimationControl.SetBool("Attack3", true);
 
                             ContinueCombo = false;
-                            if (PState == State.Block)
-                                Blocking = false;
+                            
 
 
                             //m_MoveSpeedMultiplier = 1.0f;
@@ -257,15 +322,16 @@ public class EnemyScript : PlayerScript {
                     case 6:
                         h = 0;
                         v = 0;
-                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block)
+                        if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
                             StopAllCoroutines();                            
                             StartCoroutine("Walk");
+                            if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
+                                Blocking = false;
                             PState = State.Attack4;
                             AnimationControl.SetBool("Attack4", true);
                             ContinueCombo = false;
-                            if (PState == State.Block)
-                                Blocking = false;
+                           
 
 
                             //m_MoveSpeedMultiplier = 1.0f;
@@ -279,7 +345,7 @@ public class EnemyScript : PlayerScript {
                         Blocking = true;
                         if (PState == State.Idle || PState == State.Walk)
                         {
-                            PState = State.Block;
+                            PState = State.BlockUp;
                             AnimationControl.Play("Block");
                             AnimationControl.SetBool("Block", true);
                             AnimationControl.SetBool("Attack4", false);
@@ -290,14 +356,102 @@ public class EnemyScript : PlayerScript {
 
                             m_MoveSpeedMultiplier = m_MoveBlock;
                         }
-                        PState = State.Block;
+                        
+                        ActionCooldown = 2.0f;
+                        break;
+                    case 8:
+                        ContinueCombo = false;
+                        Blocking = true;
+                        if (PState == State.Idle || PState == State.Walk)
+                        {
+                            PState = State.BlockDown;
+                            AnimationControl.Play("Block");
+                            AnimationControl.SetBool("Block", true);
+                            AnimationControl.SetBool("Attack4", false);
+                            AnimationControl.SetBool("Attack3", false);
+                            AnimationControl.SetBool("Attack2", false);
+                            AnimationControl.SetBool("Attack1", false);
+                            BlockDown.SetActive(true);
+
+                            m_MoveSpeedMultiplier = m_MoveBlock;
+                        }
+                        ActionCooldown = 2.0f;
+                        break;
+                    case 9:
+                        ContinueCombo = false;
+                        Blocking = true;
+                        if (PState == State.Idle || PState == State.Walk)
+                        {
+                            PState = State.BlockLeft;
+                            AnimationControl.Play("Block");
+                            AnimationControl.SetBool("Block", true);
+                            AnimationControl.SetBool("Attack4", false);
+                            AnimationControl.SetBool("Attack3", false);
+                            AnimationControl.SetBool("Attack2", false);
+                            AnimationControl.SetBool("Attack1", false);
+                            BlockLeft.SetActive(true);
+
+                            m_MoveSpeedMultiplier = m_MoveBlock;
+                        }
+                        ActionCooldown = 2.0f;
+                        break;
+                    case 10:
+                        ContinueCombo = false;
+                        Blocking = true;
+                        if (PState == State.Idle || PState == State.Walk)
+                        {
+                            PState = State.BlockRight;
+                            AnimationControl.Play("Block");
+                            AnimationControl.SetBool("Block", true);
+                            AnimationControl.SetBool("Attack4", false);
+                            AnimationControl.SetBool("Attack3", false);
+                            AnimationControl.SetBool("Attack2", false);
+                            AnimationControl.SetBool("Attack1", false);
+                            BlockRight.SetActive(true);
+
+                            m_MoveSpeedMultiplier = m_MoveBlock;
+                        }
+                        ActionCooldown = 2.0f;
+                        break;
+                        
+                        //seek
+                    case 11:
+                        PState = State.Walk;
+                       
+                        TargetRotation = SeekRotation;
+                        h = 0;
+                        v = 1;
+                        IsSeeking = true;
+
+                       
+                                AnimationControl.Play("Run");
+                       
+
+                        m_Jump = false;
+
+                        ActionCooldown = 2.0f;
+                        break;
+                    case 12:
+                        PState = State.Walk;
+
+                        TargetRotation = SeekRotation;
+                        h = 0;
+                        v = -1;
+                        IsSeeking = true;
+
+
+                        AnimationControl.Play("BackPedal");
+
+
+                        m_Jump = false;
+
                         ActionCooldown = 2.0f;
                         break;
                     default:
                         PState = State.Idle;
                         h = 0;
                         v = 0;
-                        AnimationControl.Play("ready");
+                        AnimationControl.Play("Idle");
                         ActionCooldown = 0.2f;
                         break;
                 }
@@ -328,7 +482,15 @@ public class EnemyScript : PlayerScript {
         while (true)
         {
             m_PlayerForward = this.transform.forward;//Vector3.Scale(this.transform.forward, new Vector3(1, 0, 1)).normalized;
+            
             m_Move = v * m_PlayerForward + h * this.transform.right;
+            if (IsSeeking)
+            {
+                TargetRotation = SeekRotation;
+
+            }
+            transform.rotation = TargetRotation;
+            
             // Debug.Log(m_Move);
             Move(m_Move, false, m_Jump);
             m_Jump = false;

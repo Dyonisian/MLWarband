@@ -65,7 +65,7 @@ public class PlayerScript : MonoBehaviour
 
     protected float h, v, h2, v2;
 
-    public enum State { Idle, Walk, Jump, Attack, Block, Hit, Attack1, Attack2, Attack3, Attack4 };
+    public enum State { Idle, Walk, Jump, Attack, BlockUp, BlockDown, BlockLeft, BlockRight, Hit, Attack1, Attack2, Attack3, Attack4 };
     public enum Direction { Left, Right, Up, Down };
 
 
@@ -122,7 +122,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (!m_Jump)
         {
-            if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.Block && PState != State.Attack4 && PState != State.Hit)
+            if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.BlockUp && PState != State.BlockDown && PState != State.BlockLeft && PState != State.BlockRight && PState != State.Attack4 && PState != State.Hit)
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
 
         }
@@ -223,7 +223,7 @@ public class PlayerScript : MonoBehaviour
                 Blocking = true;
                 if (PState == State.Idle || PState == State.Walk)
                 {
-                    PState = State.Block;
+                    
                     AnimationControl.Play("Block");
                     AnimationControl.SetBool("Block",true);
                     AnimationControl.SetBool("Attack4", false);
@@ -240,16 +240,22 @@ public class PlayerScript : MonoBehaviour
                     {
                         case Direction.Up:
                             BlockUp.SetActive(true);
-
+                            PState = State.BlockUp;
                             break;
                         case Direction.Down:
                             BlockDown.SetActive(true);
+                            PState = State.BlockDown;
+
                             break;
                         case Direction.Left:
                             BlockLeft.SetActive(true);
+                            PState = State.BlockLeft;
+
                             break;
                         case Direction.Right:
                             BlockRight.SetActive(true);
+                            PState = State.BlockRight;
+
                             break;
                         default:
                             BlockUp.SetActive(true);
@@ -280,7 +286,7 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetButtonDown("Fire1"))
             {
                 DebugTimer = 0.0f;
-                if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.Block || PState == State.Attack1 || PState == State.Attack2 || PState == State.Attack3 || PState == State.Attack4)
+                if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight || PState == State.Attack1 || PState == State.Attack2 || PState == State.Attack3 || PState == State.Attack4)
                 {
                     StopAllCoroutines();
                     if (Warband)
@@ -291,10 +297,12 @@ public class PlayerScript : MonoBehaviour
                     {
                         AnimationControl.Play("Attack1");
                         SwordAnim.Play("Attack1");
+                        /*
                         if (PState == State.Block)
                         {
                             Blocking = false;
                         }
+                        */
                         PState = State.Attack1;
 
 
@@ -307,7 +315,7 @@ public class PlayerScript : MonoBehaviour
 
 
 
-            if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.Attack4 && PState != State.Block)
+            if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.Attack4 && PState != State.BlockUp && PState != State.BlockDown && PState != State.BlockLeft && PState != State.BlockRight)
             {
                 if (v == 0 && h == 0)
                 {
@@ -442,6 +450,7 @@ public class PlayerScript : MonoBehaviour
 
 
     }
+    /*
     protected IEnumerator AttackCombo()
     {
         while (true)
@@ -597,6 +606,7 @@ public class PlayerScript : MonoBehaviour
         }
 
     }
+    
     protected IEnumerator PauseAnimation()
     {
         Debug.Log("Pausing animation");
@@ -605,6 +615,7 @@ public class PlayerScript : MonoBehaviour
             AnimationControl.Stop();
         yield return null;
     }
+    */
     virtual protected IEnumerator IsHit()
     {
         yield return new WaitForSeconds(0.8f);
