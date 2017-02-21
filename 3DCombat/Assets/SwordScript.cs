@@ -7,7 +7,7 @@ public class SwordScript : MonoBehaviour {
     PlayerScript PScript;
     [SerializeField]
 
-    EnemyScript EScript;
+    EnemyScript MyEnemyScript;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     // Use this for initialization
@@ -38,20 +38,38 @@ public class SwordScript : MonoBehaviour {
                     StopParticles();
                 }
             }
-            else
+            else //AI Sword, not player
             {
-                if (col.CompareTag("Player"))
+                if (MyEnemyScript == null)
+                    MyEnemyScript = transform.parent.GetComponent<EnemyScript>();
+                if(col.CompareTag("PlayerBlock"))
                 {
                     Particles.Play();
                     StopParticles();
+                    if(MyEnemyScript.IsReinforcementLearning)
+                    {
+                        MyEnemyScript.RLGiveReward(-0.3f);
+                    }
+                    
                 }
-                if (col.CompareTag("PlayerSword"))
+                else if (col.CompareTag("Player"))
+                {
+                    Particles.Play();
+                    StopParticles();
+                    if (MyEnemyScript.IsReinforcementLearning)
+                    {
+                        MyEnemyScript.RLGiveReward(1.0f);
+                    }
+
+                }
+                else if (col.CompareTag("PlayerSword"))
                 {
                     //Destroy(col.gameObject);
 
                     Particles.Play();
                     StopParticles();
                 }
+
             }
         }
     }
