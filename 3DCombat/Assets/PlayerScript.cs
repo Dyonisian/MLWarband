@@ -632,7 +632,7 @@ public class PlayerScript : MonoBehaviour
             Debug.Log("Im Invincible!");
             if (Invincibility <= 0.0f && (EScript.PState==State.Attack1|| EScript.PState == State.Attack2|| EScript.PState == State.Attack3|| EScript.PState == State.Attack4))
             {
-                Debug.Log("Im hit!");
+                Invincibility = 0.1f;
                 Hit = true;
             }
             /*

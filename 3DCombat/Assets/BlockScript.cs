@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BlockScript : MonoBehaviour {
     public PlayerScript EScript;
+    public EnemyScript MyEnemyScript;
     public PlayerScript PScript;
     public bool IsPlayer = true;
 	// Use this for initialization
@@ -28,6 +29,11 @@ public class BlockScript : MonoBehaviour {
 
             EScript.Hit = true;
             PScript.Invincibility = 0.2f;
+
+            if(MyEnemyScript.IsReinforcementLearning)
+            {
+                MyEnemyScript.RLGiveReward(0.5f);
+            }
         }
         
     }

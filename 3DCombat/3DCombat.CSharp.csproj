@@ -106,6 +106,7 @@
     <Compile Include="Assets\Mixamo\Melee Axe Pack\Demo\CameraScroll.cs" />
     <Compile Include="Assets\ParticleScript.cs" />
     <Compile Include="Assets\PlayerScript.cs" />
+    <Compile Include="Assets\ReinforcementLearning.cs" />
     <Compile Include="Assets\SimpleParticlePack\Scripts\ParticleTester.cs" />
     <Compile Include="Assets\SwordScript.cs" />
     <Compile Include="Assets\TargetScript.cs" />

@@ -22,7 +22,14 @@ public class EnemyScript : PlayerScript {
 
      bool SetACOnce = false;
     
+    public struct LearningState
+    {
+        public PlayerScript.State PState;
+        public bool CanHit;
+    }
 
+    public ReinforcementLearning RLScript;
+    public bool IsReinforcementLearning;
 	// Use this for initialization
 	void Start () {
         PState = State.Idle;
@@ -153,33 +160,43 @@ public class EnemyScript : PlayerScript {
                 BlockDown.SetActive(false);
                 BlockLeft.SetActive(false);
                 BlockRight.SetActive(false);
-               
-                RState =  Random.Range(0,101);
 
-                if(CanHit)
+                if (IsReinforcementLearning)
                 {
-                    if(RState>50)
-                    {
-                        RState = Random.Range(3, 7);
-                    }
-                    else if(RState>25)
-                    {
-                        RState = Random.Range(7, 11);
-                    }
-                    else
-                    {
-                        RState = 12;
-                    }
+                    LearningState RLState = new LearningState();
+                    RLState.CanHit = CanHit;
+                    RLState.PState = PScript.PState;
+                    RState = RLScript.RLStep(RLState);
                 }
                 else
                 {
-                    if(RState>50)
+                    RState = Random.Range(0, 101);
+
+                    if (CanHit)
                     {
-                        RState = 11;
+                        if (RState > 50)
+                        {
+                            RState = Random.Range(3, 7);
+                        }
+                        else if (RState > 25)
+                        {
+                            RState = Random.Range(7, 11);
+                        }
+                        else
+                        {
+                            RState = 12;
+                        }
                     }
                     else
                     {
-                        RState = Random.Range(0, 13);
+                        if (RState > 50)
+                        {
+                            RState = 11;
+                        }
+                        else
+                        {
+                            RState = Random.Range(0, 13);
+                        }
                     }
                 }
                 //Debug only!
@@ -472,6 +489,12 @@ public class EnemyScript : PlayerScript {
             {
 
                 Hit = true;
+                Invincibility = 0.1f;
+                if (IsReinforcementLearning)
+                {
+                    RLGiveReward(-0.7f);
+                }
+
             }
             
            // Destroy(col.gameObject);
@@ -510,5 +533,9 @@ public class EnemyScript : PlayerScript {
         StartCoroutine("AttackCombo");
         ActionCooldown = 0.01f;
         yield return null;
+    }
+    public void RLGiveReward(float Reward)
+    {
+        RLScript.UpdateQValues(Reward);
     }
 }
