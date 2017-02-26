@@ -624,27 +624,20 @@ public class PlayerScript : MonoBehaviour
 
         yield return null;
     }
-
+    /*
     void OnTriggerEnter(Collider col)
     {
         if (col.tag == "EnemySword")
         {
-            Debug.Log("Im Invincible!");
             if (Invincibility <= 0.0f && (EScript.PState==State.Attack1|| EScript.PState == State.Attack2|| EScript.PState == State.Attack3|| EScript.PState == State.Attack4))
             {
                 Invincibility = 0.1f;
                 Hit = true;
             }
-            /*
-            if (PState == State.Block)
-            {
-                EScript.Hit = true;
-                //EScript.StartCoroutine("")
-            }
-            */
-            //Destroy(col.gameObject);
+          
         }
     }
+    */
     public State GetState()
     {
         return PState;
