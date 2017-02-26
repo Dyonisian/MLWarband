@@ -127,6 +127,11 @@ public class EnemyScript : PlayerScript {
             v = 0;
             StartCoroutine("Walk");
             ActionCooldown = 3.0f;
+            if (IsReinforcementLearning)
+            {
+                RLGiveReward(-0.7f, PScript.GetState(), CanHit);
+            }
+
             Hit = false;
 
 
@@ -139,7 +144,7 @@ public class EnemyScript : PlayerScript {
             if (m_Direction.magnitude < HitDistance)
             {
                 CanHit = true;
-                if (SetACOnce)
+                if (SetACOnce&&PState!=State.Attack1&& PState != State.Attack2 && PState != State.Attack3 && PState != State.Attack4)
                 {
                     ActionCooldown = 0.2f;
                     SetACOnce = false;
@@ -149,7 +154,7 @@ public class EnemyScript : PlayerScript {
             {
                 CanHit = false;
             }
-            Debug.Log("Changing rotation");
+            //Debug.Log("Changing rotation");
             if (ActionCooldown <= 0.0f)
             {
                 IsSeeking = true;
@@ -374,7 +379,7 @@ public class EnemyScript : PlayerScript {
                             m_MoveSpeedMultiplier = m_MoveBlock;
                         }
                         
-                        ActionCooldown = 2.0f;
+                        ActionCooldown = 4.0f;
                         break;
                     case 8:
                         ContinueCombo = false;
@@ -392,7 +397,7 @@ public class EnemyScript : PlayerScript {
 
                             m_MoveSpeedMultiplier = m_MoveBlock;
                         }
-                        ActionCooldown = 2.0f;
+                        ActionCooldown = 4.0f;
                         break;
                     case 9:
                         ContinueCombo = false;
@@ -410,7 +415,7 @@ public class EnemyScript : PlayerScript {
 
                             m_MoveSpeedMultiplier = m_MoveBlock;
                         }
-                        ActionCooldown = 2.0f;
+                        ActionCooldown = 4.0f;
                         break;
                     case 10:
                         ContinueCombo = false;
@@ -428,7 +433,7 @@ public class EnemyScript : PlayerScript {
 
                             m_MoveSpeedMultiplier = m_MoveBlock;
                         }
-                        ActionCooldown = 2.0f;
+                        ActionCooldown = 4.0f;
                         break;
                         
                         //seek
@@ -481,6 +486,7 @@ public class EnemyScript : PlayerScript {
             }
         }
     }
+    /*
     void OnTriggerEnter(Collider col)
     {
         if (col.tag == "PlayerSword")
@@ -497,9 +503,10 @@ public class EnemyScript : PlayerScript {
 
             }
             
-           // Destroy(col.gameObject);
+           
         }
     }
+    */
     IEnumerator Walk()
     {
         while (true)
@@ -534,8 +541,11 @@ public class EnemyScript : PlayerScript {
         ActionCooldown = 0.01f;
         yield return null;
     }
-    public void RLGiveReward(float Reward)
+    public void RLGiveReward(float Reward, PlayerScript.State PState, bool CanHit)
     {
-        RLScript.UpdateQValues(Reward);
+        LearningState LS = new LearningState();
+        LS.PState = PState;
+        LS.CanHit = CanHit;
+        RLScript.UpdateQValues(Reward, LS);
     }
 }

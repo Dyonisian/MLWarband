@@ -22,19 +22,7 @@ public class BlockScript : MonoBehaviour {
 	}
     void OnTriggerEnter(Collider col)
     {
-        if((col.CompareTag("EnemySword")&&IsPlayer)    ||  (col.CompareTag("PlayerSword"))&&!IsPlayer)
-        {
-            if(EScript==null)
-            EScript = col.transform.root.GetComponent<PlayerScript>();
-
-            EScript.Hit = true;
-            PScript.Invincibility = 0.2f;
-
-            if(MyEnemyScript.IsReinforcementLearning)
-            {
-                MyEnemyScript.RLGiveReward(0.5f);
-            }
-        }
+       
         
     }
 }

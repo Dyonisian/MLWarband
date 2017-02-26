@@ -4,10 +4,12 @@ using System.Collections;
 public class SwordScript : MonoBehaviour {
     public ParticleSystem Particles;
     [SerializeField]
-    PlayerScript PScript;
+    PlayerScript MyPScript;
     [SerializeField]
 
     EnemyScript MyEnemyScript;
+    [SerializeField]
+    PlayerScript OpponentScript;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     // Use this for initialization
@@ -21,14 +23,32 @@ public class SwordScript : MonoBehaviour {
 	}
     void OnTriggerEnter(Collider col)
     {
-        if (PScript.GetState() == PlayerScript.State.Attack1 || PScript.GetState() == PlayerScript.State.Attack2 || PScript.GetState() == PlayerScript.State.Attack3 || PScript.GetState() == PlayerScript.State.Attack4)
+        if (MyPScript.GetState() == PlayerScript.State.Attack1 || MyPScript.GetState() == PlayerScript.State.Attack2 || MyPScript.GetState() == PlayerScript.State.Attack3 || MyPScript.GetState() == PlayerScript.State.Attack4)
         {
             if (transform.root.CompareTag ("Player"))
             {
+                if (col.CompareTag("EnemyBlock"))
+                {
+
+                    MyPScript.Hit = true;
+                    OpponentScript.Invincibility = 0.2f;
+
+                    if (MyEnemyScript.IsReinforcementLearning)
+                    {
+                        MyEnemyScript.RLGiveReward(0.5f, MyPScript.GetState(), true);
+                    }
+
+                }
                 if (col.CompareTag("Enemy"))
                 {
                     Particles.Play();
                     StopParticles();
+                    if (OpponentScript.Invincibility <= 0.0f)
+                    {
+                        OpponentScript.Invincibility = 0.2f;
+                        OpponentScript.Hit = true;
+                        
+                    }
                 }
                 if (col.CompareTag("EnemySword"))
                 {
@@ -38,27 +58,36 @@ public class SwordScript : MonoBehaviour {
                     StopParticles();
                 }
             }
-            else //AI Sword, not player
+            else //AI Sword, not player's
             {
                 if (MyEnemyScript == null)
                     MyEnemyScript = transform.parent.GetComponent<EnemyScript>();
-                if(col.CompareTag("PlayerBlock"))
+                if (col.CompareTag("PlayerBlock"))
                 {
-                    Particles.Play();
-                    StopParticles();
-                    if(MyEnemyScript.IsReinforcementLearning)
-                    {
-                        MyEnemyScript.RLGiveReward(-0.3f);
-                    }
+
+                    MyEnemyScript.Hit = true;
+                    OpponentScript.Invincibility = 0.2f;
+                    
+                        if (MyEnemyScript.IsReinforcementLearning)
+                        {
+                            MyEnemyScript.RLGiveReward(-0.3f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                        }
                     
                 }
                 else if (col.CompareTag("Player"))
                 {
+                    Debug.Log("Hit player!");
                     Particles.Play();
                     StopParticles();
-                    if (MyEnemyScript.IsReinforcementLearning)
+                   
+                    if (OpponentScript.Invincibility <= 0.0f )
                     {
-                        MyEnemyScript.RLGiveReward(1.0f);
+                        OpponentScript.Invincibility = 0.2f;
+                        OpponentScript.Hit = true;
+                        if (MyEnemyScript.IsReinforcementLearning)
+                        {
+                            MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                        }
                     }
 
                 }

@@ -9,6 +9,7 @@ TagManager:
   - EnemySword
   - Bullet
   - PlayerBlock
+  - EnemyBlock
   layers:
   - Default
   - TransparentFX
