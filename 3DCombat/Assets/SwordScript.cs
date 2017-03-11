@@ -35,11 +35,11 @@ public class SwordScript : MonoBehaviour {
 
                     if (MyEnemyScript.IsReinforcementLearning)
                     {
-                        MyEnemyScript.RLGiveReward(0.5f, MyPScript.GetState(), true);
+                        MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
                     }
 
                 }
-                if (col.CompareTag("Enemy"))
+                else if (col.CompareTag("Enemy"))
                 {
                     Particles.Play();
                     StopParticles();
@@ -50,7 +50,7 @@ public class SwordScript : MonoBehaviour {
                         
                     }
                 }
-                if (col.CompareTag("EnemySword"))
+                else if (col.CompareTag("EnemySword"))
                 {
                     //Destroy(col.gameObject);
 
@@ -60,12 +60,12 @@ public class SwordScript : MonoBehaviour {
             }
             else //AI Sword, not player's
             {
-                if (MyEnemyScript == null)
-                    MyEnemyScript = transform.parent.GetComponent<EnemyScript>();
+                
                 if (col.CompareTag("PlayerBlock"))
                 {
 
                     MyEnemyScript.Hit = true;
+                    Debug.Log("Hit block");
                     OpponentScript.Invincibility = 0.2f;
                     
                         if (MyEnemyScript.IsReinforcementLearning)
