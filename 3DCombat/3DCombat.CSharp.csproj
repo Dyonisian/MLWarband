@@ -108,10 +108,13 @@
     <Compile Include="Assets\ParticleScript.cs" />
     <Compile Include="Assets\PlayerScript.cs" />
     <Compile Include="Assets\ReinforcementLearning.cs" />
+    <Compile Include="Assets\ReinforcementLearningMove.cs" />
+    <Compile Include="Assets\Scripts\JSONHelper.cs" />
     <Compile Include="Assets\SimpleParticlePack\Scripts\ParticleTester.cs" />
     <Compile Include="Assets\SwordScript.cs" />
     <Compile Include="Assets\TargetScript.cs" />
     <Compile Include="Assets\TestScript.cs" />
+    <Compile Include="Assets\TimeScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Fantasy Skybox FREE\Fog and Ambient reference.txt" />

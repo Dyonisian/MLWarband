@@ -8,22 +8,28 @@ public class ReinforcementLearning : MonoBehaviour
 {
     PlayerScript.State PState;
     int actions, states;
-   
+    
+
     [SerializeField]
 
-    private int QState, QAction;
+    private int QState, QAction, QLastState, QLastAction;
+
+    EnemyScript.LearningState LastLS;
     bool CanHit = false;
     public int LoadFromFile = 0;
     public float LearningRate = 0.5f;
     public int FileNo;
-   
-
+    public float Exploration;
+    public int Iterations, Decisions;
+    private float InitialExploration;
+    bool RewardReceived;
     [System.Serializable]
     public class TestData : ScriptableObject
     {
         public string curDataStorage;
         //QDataClass QData;
     }
+    [System.Serializable]
     public class QDataClass
     {
         public TestData curData = null;
@@ -100,7 +106,13 @@ public class ReinforcementLearning : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Path = "Assets/RL" + FileNo + ".asset";
+        Iterations = 0;
+        Decisions = 0;
+        QLastAction = -1;
+        QLastState = -1;
+        RewardReceived = false;
+        InitialExploration = Exploration;
+        Path = "Assets/RL" + FileNo + ".json";
 
         actions = 13;
         states = 26;
@@ -126,7 +138,7 @@ public class ReinforcementLearning : MonoBehaviour
         else
         {
           
-            TestData temp = LoadData();
+            LoadData();
             
         }
         
@@ -141,7 +153,28 @@ public class ReinforcementLearning : MonoBehaviour
     public int RLStep(EnemyScript.LearningState LS)
     {
         //Update last QValue? If hasn't been updated yet, either give small negative feedback or none. Move accomplished nothing
+        if(!RewardReceived && Decisions>0)
+        {
+            //Avoided an attack, small positive bonus
+            if (LastLS.PState == PlayerScript.State.Attack1 || LastLS.PState == PlayerScript.State.Attack2 || LastLS.PState == PlayerScript.State.Attack3 || LastLS.PState == PlayerScript.State.Attack4)
+            {
+                
+               
+                if(QLastAction==1 || QLastAction == 12 || QLastAction == 11)
+                    UpdateQValues(2.0f, LastLS);
+                else
+                    UpdateQValues(0.1f, LastLS);
 
+                Iterations--;
+            }
+            else
+            {
+                UpdateQValues(-0.01f, LastLS);
+                Iterations--;
+            }
+        }
+        
+        Exploration = InitialExploration - (Iterations/200.0f);
         QState = (int)LS.PState;
         //The states where CanHit is true start from 13
         if (LS.CanHit)
@@ -152,38 +185,55 @@ public class ReinforcementLearning : MonoBehaviour
         int count = 0;
         max[0,0] = -1000;
         max[0, 1] = -1000;
-        for (int i=0; i<13; i++)
-        {
 
-            if (QValues[QState, i] > max[count, 1])
-            {
-                count = 0;
-                max[count, 1] = QValues[QState, i];//QValue
-                max[count, 0] = i;//QAction                               
-            }
-            else if(QValues[QState, i] == max[count, 1])
-            {
-                count++;
-                max[count, 1] = QValues[QState, i];//QValue
-                max[count, 0] = i;//QAction
-
-                //Now one more index has a second action with the same QValue
-            }
-        }
-        if(count>0)
+        float r = Random.Range(0.0f, 1.0f);
+        if (r < Exploration)
         {
-            QAction = (int)max[Random.Range(0, count+1), 0];
+            QAction = Random.Range(0, 13);
         }
         else
         {
-            QAction = (int)max[0, 0];
-        }
+            for (int i = 0; i < 13; i++)
+            {
+                if (i == 2)
+                    continue;
+                if (QValues[QState, i] > max[count, 1])
+                {
+                    count = 0;
+                    max[count, 1] = QValues[QState, i];//QValue
+                    max[count, 0] = i;//QAction                               
+                }
+                else if (QValues[QState, i] == max[count, 1])
+                {
+                    count++;
+                    max[count, 1] = QValues[QState, i];//QValue
+                    max[count, 0] = i;//QAction
 
+                    //Now one more index has a second action with the same QValue
+                }
+            }
+            if (count > 0)
+            {
+                QAction = (int)max[Random.Range(0, count + 1), 0];
+            }
+            else
+            {
+                QAction = (int)max[0, 0];
+            }
+        }
+        Decisions++;
+        int temp = QState;
+        if (temp > 13)
+            temp -= 13;
+        Debug.Log("State to Action" + (EnemyScript.State)temp + ", " + QAction);
+        LastLS = LS;
+        RewardReceived = false;
         return QAction;
 
     }
     public void UpdateQValues(float Reward, EnemyScript.LearningState LS)
     {
+        RewardReceived = true;
         //Update to State when this reward was received, for accurate mapping
         //Ensures that the reward is updated for whatever state the player was in, for the action last taken
         QState = (int)LS.PState;
@@ -193,8 +243,14 @@ public class ReinforcementLearning : MonoBehaviour
         //Q(state, action) = R(state, action) + Gamma * Max[Q(next state, all actions)]
         //𝑄(𝑆𝑡𝑎𝑡𝑒,𝐴𝑐𝑡𝑖𝑜𝑛)= (1−𝐿𝑒𝑎𝑟𝑛𝑖𝑛𝑔 𝑅𝑎𝑡𝑒)∗(𝐶𝑢𝑟𝑟𝑒𝑛𝑡 𝑄)+(𝐿𝑒𝑎𝑟𝑛𝑖𝑛𝑔 𝑅𝑎𝑡𝑒∗𝑅𝑒𝑤𝑎𝑟𝑑 𝑉𝑎𝑙𝑢𝑒)
         Debug.Log("Reward received" + Reward);
-        QValues[QState, QAction] = (1 - LearningRate) * QValues[QState, QAction] + (LearningRate * Reward);
+        //QValues[QState, QAction] = (1 - LearningRate) * QValues[QState, QAction] + (LearningRate * Reward);
+        //Other learning method from DeWolf
+        if (QLastState >= 0 && QLastAction >= 0)
+            QValues[QLastState, QLastAction] += LearningRate * (QValues[QState, QAction]);
+        QValues[QState, QAction] += LearningRate * (Reward - QValues[QState, QAction] );
+
         
+
         for (int i = 0; i < 26; i++)
         {
             for (int j = 0; j < 13; j++)
@@ -205,10 +261,15 @@ public class ReinforcementLearning : MonoBehaviour
 
             }
         }
+
+        Iterations++;
+        QLastState = QState;
+        QLastAction = QAction;
+
+        //SaveData();
         
-        
-        SaveData();
     }
+    
     void SaveData()
     {
         QData.Q0 = InspectorQValues.rows[0].row;
@@ -239,14 +300,16 @@ public class ReinforcementLearning : MonoBehaviour
         QData.Q25 = InspectorQValues.rows[25].row;
 
         // FileStream FS;
-        TestData FileData = (TestData)AssetDatabase.LoadAssetAtPath(Path, typeof(TestData));
-        if(FileData == null)
-        {
-            FileData = CreateDatabase();
-        }
-        FileData.curDataStorage = JsonUtility.ToJson(QData);
-        AssetDatabase.Refresh();
-        AssetDatabase.SaveAssets();
+        string FileData;
+        
+        FileData = JsonUtility.ToJson(QData);
+        if (File.Exists("RL" + FileNo))
+            File.Delete("RL" + FileNo);
+
+        //FS = File.Open("RL" + FileNo,FileMode.OpenOrCreate,FileAccess.ReadWrite);
+        File.WriteAllText(Path, FileData);
+       
+
         /*
         if (File.Exists("RL" + FileNo))
             File.Delete("RL" + FileNo);
@@ -260,30 +323,59 @@ public class ReinforcementLearning : MonoBehaviour
         */
 
     }
-    TestData LoadData()
+    void LoadData()
     {
-        TestData FileData = (TestData)AssetDatabase.LoadAssetAtPath(Path, typeof(TestData));
+        string FileData = File.ReadAllText(Path);
         if(FileData!=null)
         {
-            JsonUtility.FromJsonOverwrite(FileData.curDataStorage, QData);
-            QData = JsonUtility.FromJson<QDataClass>(Path);
+            JsonUtility.FromJsonOverwrite(FileData, QData);
+            //QData = JsonUtility.FromJson<QDataClass>(Path);
             Debug.Log("Trying to load data");
+            InspectorQValues.rows[0].row = QData.Q0;
+            InspectorQValues.rows[1].row = QData.Q1;
+            InspectorQValues.rows[2].row = QData.Q2;
+            InspectorQValues.rows[3].row = QData.Q3;
+            InspectorQValues.rows[4].row = QData.Q4;
+            InspectorQValues.rows[5].row = QData.Q5;
+            InspectorQValues.rows[6].row = QData.Q6;
+            InspectorQValues.rows[7].row = QData.Q7;
+            InspectorQValues.rows[8].row = QData.Q8;
+            InspectorQValues.rows[9].row = QData.Q9;
+            InspectorQValues.rows[10].row = QData.Q10;
+            InspectorQValues.rows[11].row = QData.Q11;
+            InspectorQValues.rows[12].row = QData.Q12;
+            InspectorQValues.rows[13].row = QData.Q13;
+            InspectorQValues.rows[14].row = QData.Q14;
+            InspectorQValues.rows[15].row = QData.Q15;
+            InspectorQValues.rows[16].row = QData.Q16;
+            InspectorQValues.rows[17].row = QData.Q17;
+            InspectorQValues.rows[18].row = QData.Q18;
+            InspectorQValues.rows[19].row = QData.Q19;
+            InspectorQValues.rows[20].row = QData.Q20;
+            InspectorQValues.rows[21].row = QData.Q21;
+            InspectorQValues.rows[22].row = QData.Q22;
+            InspectorQValues.rows[23].row = QData.Q23;
+            InspectorQValues.rows[24].row = QData.Q24;
+            InspectorQValues.rows[25].row = QData.Q25;
+
             for (int i = 0; i < 26; i++)
             {
                 for (int j = 0; j < 13; j++)
                 {
-                    QValues[i, j] = QData.QValues[i].Q[j];
-                    InspectorQValues.rows[i].row[j] = QData.QValues[i].Q[j];
+                    QValues[i, j] = InspectorQValues.rows[i].row[j];
+                    //if (QValues[i, j] > 1.0f)
+                        //QValues[i, j] = 1.0f;
+
+
 
                 }
             }
-            return FileData;
+            
         }
        
         else
         {
             Debug.Log("File data was null!");
-            return CreateDatabase();
         }
     }
     TestData CreateDatabase()
@@ -301,5 +393,9 @@ public class ReinforcementLearning : MonoBehaviour
         {
             return null;
         }
+    }
+    void OnApplicationQuit()
+    {
+        SaveData();
     }
 }
