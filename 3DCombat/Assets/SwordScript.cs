@@ -10,6 +10,8 @@ public class SwordScript : MonoBehaviour {
     EnemyScript MyEnemyScript;
     [SerializeField]
     PlayerScript OpponentScript;
+    [SerializeField]
+    EnemyScript OpponentEnemyScript;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     // Use this for initialization
@@ -33,9 +35,11 @@ public class SwordScript : MonoBehaviour {
                     MyPScript.Hit = true;
                     OpponentScript.Invincibility = 0.2f;
 
-                    if (MyEnemyScript.IsReinforcementLearning)
+                    if (OpponentEnemyScript.IsReinforcementLearning)
                     {
-                        MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                        OpponentEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                        OpponentEnemyScript.RLMoveGiveReward(0.3f, (PlayerScript.State)OpponentEnemyScript.GetRState(), true);
+
                     }
 
                 }
@@ -71,8 +75,10 @@ public class SwordScript : MonoBehaviour {
                         if (MyEnemyScript.IsReinforcementLearning)
                         {
                             MyEnemyScript.RLGiveReward(-0.3f, OpponentScript.GetState(), MyEnemyScript.CanHit);
-                        }
-                    
+                            MyEnemyScript.RLMoveGiveReward(-0.3f, (PlayerScript.State)MyEnemyScript.GetRState(), MyEnemyScript.CanHit);
+
+                    }
+
                 }
                 else if (col.CompareTag("Player"))
                 {
@@ -87,6 +93,8 @@ public class SwordScript : MonoBehaviour {
                         if (MyEnemyScript.IsReinforcementLearning)
                         {
                             MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                            MyEnemyScript.RLMoveGiveReward(1.0f, (PlayerScript.State)MyEnemyScript.GetRState(), MyEnemyScript.CanHit);
+
                         }
                     }
 

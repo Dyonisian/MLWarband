@@ -195,7 +195,8 @@ public class ReinforcementLearning : MonoBehaviour
         {
             for (int i = 0; i < 13; i++)
             {
-                if (i == 2)
+                //2 is jump, not used anymore. The others are handled by RLMoveScript
+                if (i == 0 || i == 1 || i == 2 || i == 11 || i == 12)
                     continue;
                 if (QValues[QState, i] > max[count, 1])
                 {
@@ -225,7 +226,7 @@ public class ReinforcementLearning : MonoBehaviour
         int temp = QState;
         if (temp > 13)
             temp -= 13;
-        Debug.Log("State to Action" + (EnemyScript.State)temp + ", " + QAction);
+        //Debug.Log("State to Action" + (EnemyScript.State)temp + ", " + QAction);
         LastLS = LS;
         RewardReceived = false;
         return QAction;
@@ -242,7 +243,7 @@ public class ReinforcementLearning : MonoBehaviour
             QState += 13;
         //Q(state, action) = R(state, action) + Gamma * Max[Q(next state, all actions)]
         //𝑄(𝑆𝑡𝑎𝑡𝑒,𝐴𝑐𝑡𝑖𝑜𝑛)= (1−𝐿𝑒𝑎𝑟𝑛𝑖𝑛𝑔 𝑅𝑎𝑡𝑒)∗(𝐶𝑢𝑟𝑟𝑒𝑛𝑡 𝑄)+(𝐿𝑒𝑎𝑟𝑛𝑖𝑛𝑔 𝑅𝑎𝑡𝑒∗𝑅𝑒𝑤𝑎𝑟𝑑 𝑉𝑎𝑙𝑢𝑒)
-        Debug.Log("Reward received" + Reward);
+        //Debug.Log("Reward received" + Reward);
         //QValues[QState, QAction] = (1 - LearningRate) * QValues[QState, QAction] + (LearningRate * Reward);
         //Other learning method from DeWolf
         if (QLastState >= 0 && QLastAction >= 0)

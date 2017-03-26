@@ -5001,6 +5001,11 @@ Prefab:
       propertyPath: OpponentScript
       value: 
       objectReference: {fileID: 1750993565}
+    - target: {fileID: 114910161868278186, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: OpponentEnemyScript
+      value: 
+      objectReference: {fileID: 1750993565}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
   m_IsPrefabParent: 0
@@ -13502,6 +13507,11 @@ Prefab:
       propertyPath: OpponentScript
       value: 
       objectReference: {fileID: 1463974275}
+    - target: {fileID: 114935017212789478, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: RLMoveScript
+      value: 
+      objectReference: {fileID: 1750993566}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
   m_IsPrefabParent: 0
@@ -13545,9 +13555,9 @@ MonoBehaviour:
   QAction: 0
   QLastState: 0
   QLastAction: 0
-  LoadFromFile: 0
+  LoadFromFile: 1
   LearningRate: 0.3
-  FileNo: 1
+  FileNo: 9
   Exploration: 1
   Iterations: 200
   Decisions: 0
@@ -13998,10 +14008,10 @@ MonoBehaviour:
   QAction: 0
   QLastState: 0
   QLastAction: 0
-  LoadFromFile: 0
+  LoadFromFile: 1
   LearningRate: 0.5
-  FileNo: 0
-  Exploration: 0
+  FileNo: 9
+  Exploration: 1
   Iterations: 0
   Decisions: 0
   InspectorQValues:
@@ -20744,6 +20754,7 @@ MonoBehaviour:
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
+  OpponentEnemyScript: {fileID: 0}
 --- !u!136 &2126534116
 CapsuleCollider:
   m_ObjectHideFlags: 0

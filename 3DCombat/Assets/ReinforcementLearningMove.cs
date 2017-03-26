@@ -114,7 +114,7 @@ public class ReinforcementLearningMove : MonoBehaviour
         InitialExploration = Exploration;
         Path = "Assets/RLMove" + FileNo + ".json";
 
-        actions = 4;
+        actions = 13;
         states = 26;
         //14 is same as 1 but with can hit true
 
@@ -161,7 +161,7 @@ public class ReinforcementLearningMove : MonoBehaviour
 
 
                 
-                    UpdateQValues(0.5f, LastLS);
+                    UpdateQValues(1.5f, LastLS);
                 
 
                 Iterations--;

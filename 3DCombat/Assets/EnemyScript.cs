@@ -8,6 +8,7 @@ public class EnemyScript : PlayerScript {
     float ActionCooldown;
     bool SetOnce;
     int RState = 0;
+    int MState = 0;
     [SerializeField]
 
     PlayerScript OpponentScript;
@@ -24,9 +25,16 @@ public class EnemyScript : PlayerScript {
 
      bool SetACOnce = false;
     
+    public enum MoveState  {Idle, Wander, Seek, Evade};
     public struct LearningState
     {
         public PlayerScript.State PState;
+        public PlayerScript.State QAction;
+        public bool CanHit;
+    }
+    public struct LearningStateMove
+    {
+        public MoveState MState;
         public bool CanHit;
     }
 
@@ -41,6 +49,7 @@ public class EnemyScript : PlayerScript {
         PState = State.Idle;
         IsReacting = false;
         ReactionMode = false;
+        RState = MState = 0;
         //m_Animator = GetComponent<Animator>();
         
         m_CapsuleHeight = m_Capsule.height;
@@ -159,7 +168,10 @@ public class EnemyScript : PlayerScript {
             Debug.Log("AC set to 3");
             if (IsReinforcementLearning)
             {
-                RLGiveReward(-1.5f, OpponentScript.GetState(), CanHit);
+                RLGiveReward(-0.7f, OpponentScript.GetState(), CanHit);
+                RLMoveGiveReward(-0.7f, (State)RState, CanHit);
+
+
             }
 
             Hit = false;
@@ -272,7 +284,7 @@ public class EnemyScript : PlayerScript {
                 }
                 if(m_Direction.magnitude>15.0f)
                 {
-                    if(!IsReinforcementLearning || !IsReacting)
+                    if(!IsReinforcementLearning)
                     RState = 11;
                 }
                 //Debug only!
@@ -588,10 +600,8 @@ public class EnemyScript : PlayerScript {
                 ReactionMode = false;
                 if (IsReinforcementLearning)
                 {
-                    LearningState RLMoveState = new LearningState();
-                    RLMoveState.CanHit = CanHit;
-                    RLMoveState.PState = (State)RState;
-                    RState = RLMoveScript.RLStep(RLMoveState);
+                    IsSeeking = false;
+                    RLMove();
                 }
 
                 //Debug.Log("Switched to State " + PState + " Velocity " + h + " " + v);
@@ -666,10 +676,79 @@ public class EnemyScript : PlayerScript {
         LS.CanHit = CanHit;
         RLScript.UpdateQValues(Reward, LS);
     }
+    public void RLMoveGiveReward(float Reward, PlayerScript.State PState, bool CanHit)
+    {
+        LearningState LS = new LearningState();
+        LS.PState = (State)RState;
+        LS.CanHit = CanHit;
+        RLMoveScript.UpdateQValues(Reward, LS);
+    }
     public IEnumerator ResetSetACOnce(float time)
     {
         yield return new WaitForSeconds(time);
         SetACOnce = true;
         yield return null;
+    }
+    public void RLMove()
+    {
+        LearningState RLMoveState = new LearningState();
+        RLMoveState.CanHit = CanHit;
+        RLMoveState.PState = (State)RState;
+        MState = RLMoveScript.RLStep(RLMoveState);
+
+        if (m_Direction.magnitude > 15.0f)
+        {
+            MState = 2;
+        }
+
+            switch (MState)
+        {
+            case 0:
+                h = 0;
+                v = 0;
+                break;
+            case 1:
+                h = Random.Range(-1.0f, 1.0f);
+                v = Random.Range(-1.0f, 1.0f);
+                Vector3 RandomTarget;
+                RandomTarget.x = Random.Range(0, 100);
+                RandomTarget.y = 0;
+                RandomTarget.z = Random.Range(0, 100);
+                TargetRotation = Quaternion.LookRotation(RandomTarget);
+
+                if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.BlockUp && PState != State.BlockDown && PState != State.BlockLeft && PState != State.BlockRight && PState != State.Attack4)
+                {
+                    if (Mathf.Abs(v) > Mathf.Abs(h))
+                    {
+                        if (v > 0)
+                            AnimationControl.Play("Run");
+                        else
+                            AnimationControl.Play("BackPedal");
+                    }
+                    else
+                    {
+                        if (h > 0)
+                            AnimationControl.Play("StrafeRight");
+                        else
+                            AnimationControl.Play("StrafeLeft");
+                    }
+                }
+                break;
+            case 2:
+                h = 0;
+                v = 1;
+                IsSeeking = true;
+                break;
+            case 3:
+                h = 0;
+                v = -1;
+                IsSeeking = true;
+                break;
+
+        }
+    }
+    public int GetRState()
+    {
+        return RState;
     }
 }
