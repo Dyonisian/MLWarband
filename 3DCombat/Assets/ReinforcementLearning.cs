@@ -246,6 +246,7 @@ public class ReinforcementLearning : MonoBehaviour
         //Debug.Log("Reward received" + Reward);
         //QValues[QState, QAction] = (1 - LearningRate) * QValues[QState, QAction] + (LearningRate * Reward);
         //Other learning method from DeWolf
+
         if (QLastState >= 0 && QLastAction >= 0)
             QValues[QLastState, QLastAction] += LearningRate * (QValues[QState, QAction]);
         QValues[QState, QAction] += LearningRate * (Reward - QValues[QState, QAction] );

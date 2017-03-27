@@ -26,12 +26,14 @@ public class EnemyScript : PlayerScript {
      bool SetACOnce = false;
     
     public enum MoveState  {Idle, Wander, Seek, Evade};
+
     public struct LearningState
     {
         public PlayerScript.State PState;
         public PlayerScript.State QAction;
         public bool CanHit;
     }
+
     public struct LearningStateMove
     {
         public MoveState MState;

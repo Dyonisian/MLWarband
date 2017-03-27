@@ -65,7 +65,9 @@ public class PlayerScript : MonoBehaviour
 
     protected float h, v, h2, v2;
 
-    public enum State { Idle, Walk, Jump, Attack, BlockUp, BlockDown, BlockLeft, BlockRight, Hit, Attack1, Attack2, Attack3, Attack4 };
+    public enum State { Idle, Walk, Jump, Attack, BlockUp, BlockDown, BlockLeft,
+    BlockRight, Hit, Attack1, Attack2, Attack3, Attack4 };
+
     public enum Direction { Left, Right, Up, Down };
 
 
