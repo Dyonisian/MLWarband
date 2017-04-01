@@ -9,7 +9,13 @@ public class SwordScript : MonoBehaviour {
 
     EnemyScript MyEnemyScript;
     [SerializeField]
-    PlayerScript OpponentScript;
+    public PlayerScript OpponentScript;
+
+    [SerializeField]
+
+    EnemyScriptNeat MyEnemyScriptNeat;
+
+    public bool IsNeat;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     // Use this for initialization
@@ -32,10 +38,16 @@ public class SwordScript : MonoBehaviour {
 
                     MyPScript.Hit = true;
                     OpponentScript.Invincibility = 0.2f;
-
-                    if (MyEnemyScript.IsReinforcementLearning)
+                    if (!IsNeat)
                     {
-                        MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                        if (MyEnemyScript.IsReinforcementLearning)
+                        {
+                            MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                        }
+                    }
+                    else
+                    {
+                        
                     }
 
                 }
@@ -65,18 +77,23 @@ public class SwordScript : MonoBehaviour {
                 {
 
                     MyEnemyScript.Hit = true;
-                    Debug.Log("Hit block");
                     OpponentScript.Invincibility = 0.2f;
-                    
+
+                    if (!IsNeat)
+                    {
                         if (MyEnemyScript.IsReinforcementLearning)
                         {
                             MyEnemyScript.RLGiveReward(-0.3f, OpponentScript.GetState(), MyEnemyScript.CanHit);
                         }
+                    }
+                    else
+                    {
+
+                    }
                     
                 }
                 else if (col.CompareTag("Player"))
                 {
-                    Debug.Log("Hit player!");
                     Particles.Play();
                     StopParticles();
                    
@@ -84,9 +101,16 @@ public class SwordScript : MonoBehaviour {
                     {
                         OpponentScript.Invincibility = 0.2f;
                         OpponentScript.Hit = true;
-                        if (MyEnemyScript.IsReinforcementLearning)
+                        if (!IsNeat)
                         {
-                            MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                            if (MyEnemyScript.IsReinforcementLearning)
+                            {
+                                MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                            }
+                        }
+                        else
+                        {
+                            MyEnemyScriptNeat.ChangeMyHits(1);
                         }
                     }
 
