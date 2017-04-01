@@ -22,7 +22,7 @@ public class Optimizer : MonoBehaviour {
     SimpleExperiment experiment;
     static NeatEvolutionAlgorithm<NeatGenome> _ea;
 
-    public GameObject Unit, Enemy, Player;
+    public GameObject Unit, Enemy;
 
     Dictionary<IBlackBox, UnitController> ControllerMap = new Dictionary<IBlackBox, UnitController>();
     private DateTime startTime;
@@ -33,14 +33,9 @@ public class Optimizer : MonoBehaviour {
 
     private uint Generation;
     private double Fitness;
-    Vector3 InitialPosition;
 
-    public bool PlayMode;
-    public string PathIdentifier;
-    public bool IsEnemySpawned;
 	// Use this for initialization
 	void Start () {
-        InitialPosition = transform.position;
         Utility.DebugLog = true;
         experiment = new SimpleExperiment();
         XmlDocument xmlConfig = new XmlDocument();
@@ -50,12 +45,10 @@ public class Optimizer : MonoBehaviour {
 
         experiment.Initialize("NeatAI", xmlConfig.DocumentElement, NUM_INPUTS, NUM_OUTPUTS);
 
-        champFileSavePath = Application.streamingAssetsPath + string.Format("/{0}.champ.xml", "NeatAI"+PathIdentifier);
-        popFileSavePath = Application.streamingAssetsPath + string.Format("/{0}.pop.xml", "NeatAI" + PathIdentifier);       
+        champFileSavePath = Application.persistentDataPath + string.Format("/{0}.champ.xml", "NeatAI");
+        popFileSavePath = Application.persistentDataPath + string.Format("/{0}.pop.xml", "NeatAI");       
 
         print(champFileSavePath);
-        IsEnemySpawned = false;
-      
 	}
 
     // Update is called once per frame
@@ -66,15 +59,7 @@ public class Optimizer : MonoBehaviour {
         timeLeft -= Time.deltaTime;
         accum += Time.timeScale / Time.deltaTime;
         ++frames;
-        if (PlayMode && !IsEnemySpawned)
-        {
-            if ((Player.transform.position - transform.position).magnitude <= 35)
-            {
 
-                RunBest();
-                IsEnemySpawned = true;
-            }
-        }
         if (timeLeft <= 0.0)
         {
             var fps = accum / frames;
@@ -101,7 +86,7 @@ public class Optimizer : MonoBehaviour {
         _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
         _ea.PausedEvent += new EventHandler(ea_PauseEvent);
 
-        var evoSpeed = 1;
+        var evoSpeed = 25;
 
      //   Time.fixedDeltaTime = 0.045f;
         Time.timeScale = evoSpeed;       
@@ -180,30 +165,23 @@ public class Optimizer : MonoBehaviour {
         ESN.Enemy = enemyObj;
         ESN.OpponentScript = ES;
         ESN.MySword.OpponentScript = ES;
-        
 
         ES.Enemy = obj;
         ES.OpponentScript = ESN;
         ES.MySword.OpponentScript = ESN;
-        ES.MySword.OpponentNeatScript = ESN;
-        transform.position += new Vector3(30, 0, 30);
 
-        //Try to delay activation
+
 
         ControllerMap.Add(box, controller);
 
         controller.Activate(box);
     }
-   
+
     public void StopEvaluation(IBlackBox box)
     {
         UnitController ct = ControllerMap[box];
-        transform.position = InitialPosition;
-        if (ct.gameObject)
-        {
-            Destroy(ct.GetComponent<EnemyScriptNeat>().Enemy.gameObject);
-            Destroy(ct.gameObject);
-        }
+
+        Destroy(ct.gameObject);
     }
 
     public void RunBest()
@@ -234,38 +212,8 @@ public class Optimizer : MonoBehaviour {
         // Decode the genome into a phenome (neural network).
         var phenome = genomeDecoder.Decode(genome);
 
-        GameObject obj = Instantiate(Unit, transform.position, transform.rotation) as GameObject;
+        GameObject obj = Instantiate(Unit, Unit.transform.position, Unit.transform.rotation) as GameObject;
         UnitController controller = obj.GetComponent<UnitController>();
-
-        EnemyScriptNeat ESN = obj.GetComponent<EnemyScriptNeat>();
-
-        if (!PlayMode)
-        {
-            GameObject enemyObj = Instantiate(Enemy, transform.position + new Vector3(3, 0, 3), transform.rotation) as GameObject;
-            EnemyScript ES = enemyObj.GetComponent<EnemyScript>();
-
-            ESN.Enemy = enemyObj;
-            ESN.OpponentScript = ES;
-            ESN.MySword.OpponentScript = ES;
-
-            ES.Enemy = obj;
-            ES.OpponentScript = ESN;
-            ES.MySword.OpponentScript = ESN;
-            ES.MySword.OpponentNeatScript = ESN;
-        }
-        else
-        {
-            PlayerScript PS = Player.GetComponent<PlayerScript>();
-            ESN.Enemy = Player;
-            ESN.OpponentScript = PS;
-            ESN.MySword.OpponentScript = PS;
-
-            PS.Enemy = obj;
-            PS.MySword.OpponentScript = ESN;
-            PS.MySword.OpponentNeatScript = ESN;
-            
-
-        }
 
         ControllerMap.Add(phenome, controller);
 
@@ -283,32 +231,19 @@ public class Optimizer : MonoBehaviour {
 
     void OnGUI()
     {
-        if (!PlayMode)
+        if (GUI.Button(new Rect(10, 10, 100, 40), "Start EA"))
         {
-            if (GUI.Button(new Rect(10, 10, 100, 40), "Start EA"))
-            {
-                StartEA();
-            }
-            if (GUI.Button(new Rect(10, 60, 100, 40), "Stop EA"))
-            {
-                StopEA();
-            }
-            if (GUI.Button(new Rect(10, 110, 100, 40), "Run best"))
-            {
-                RunBest();
-            }
-            if (GUI.Button(new Rect(120, 10, 200, 40), "Lower Timescale"))
-            {
-                Time.timeScale = Time.timeScale - 1;
-            }
-            if (GUI.Button(new Rect(120, 60, 200, 40), "Increase Timescale"))
-            {
-                Time.timeScale = Time.timeScale + 1;
-            }
-
-
-
-            GUI.Button(new Rect(10, Screen.height - 70, 100, 60), string.Format("Generation: {0}\nFitness: {1:0.00}", Generation, Fitness));
+            StartEA();
         }
+        if (GUI.Button(new Rect(10, 60, 100, 40), "Stop EA"))
+        {
+            StopEA();
+        }
+        if (GUI.Button(new Rect(10, 110, 100, 40), "Run best"))
+        {
+            RunBest();
+        }
+
+        GUI.Button(new Rect(10, Screen.height - 70, 100, 60), string.Format("Generation: {0}\nFitness: {1:0.00}", Generation, Fitness));
     }
 }

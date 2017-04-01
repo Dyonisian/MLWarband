@@ -10,7 +10,7 @@ public class EnemyScript : PlayerScript {
     int RState = 0;
     [SerializeField]
 
-    PlayerScript OpponentScript;
+    public PlayerScript OpponentScript;
 
     public bool IsSeeking = false;
     Vector3 SeekDirection;
@@ -24,7 +24,7 @@ public class EnemyScript : PlayerScript {
 
      bool SetACOnce = false;
     
-    public struct LearningState
+    public  struct LearningState
     {
         public PlayerScript.State PState;
         public bool CanHit;
@@ -36,6 +36,8 @@ public class EnemyScript : PlayerScript {
     bool LastStateWasAttack;
     bool IsReacting;
     bool ReactionMode;
+
+    public bool IsNEAT;
 	// Use this for initialization
 	void Start () {
         PState = State.Idle;
@@ -69,6 +71,9 @@ public class EnemyScript : PlayerScript {
     }
     void FixedUpdate()
     {
+        if (IsNEAT)
+            return;
+
         StateText.text = PState.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
@@ -156,7 +161,6 @@ public class EnemyScript : PlayerScript {
             StartCoroutine("Walk");
             ActionCooldown = 3.0f;
             if(transform.root.CompareTag("Enemy"))
-            Debug.Log("AC set to 3");
             if (IsReinforcementLearning)
             {
                 RLGiveReward(-1.5f, OpponentScript.GetState(), CanHit);
@@ -208,7 +212,6 @@ public class EnemyScript : PlayerScript {
             if (ActionCooldown<=0.0f && !IsReacting && rdm>25.0f && IsReinforcementLearning&& !ReactionMode)
             {
                 ActionCooldown = 4.0f;
-                Debug.Log("Reaction mode");
                 h = 0;
                 v = 0;
                 ReactionMode = true;
@@ -586,6 +589,7 @@ public class EnemyScript : PlayerScript {
                 }
                 IsReacting = false;
                 ReactionMode = false;
+                /*
                 if (IsReinforcementLearning)
                 {
                     LearningState RLMoveState = new LearningState();
@@ -593,6 +597,7 @@ public class EnemyScript : PlayerScript {
                     RLMoveState.PState = (State)RState;
                     RState = RLMoveScript.RLStep(RLMoveState);
                 }
+                */
 
                 //Debug.Log("Switched to State " + PState + " Velocity " + h + " " + v);
 
@@ -602,6 +607,27 @@ public class EnemyScript : PlayerScript {
 
             }
         }
+    }
+    
+    public LearningState BuildLearningState()
+    {
+        m_Direction = Enemy.transform.position - transform.position;
+        CurrentDistance = m_Direction.magnitude;
+        SeekRotation = Quaternion.LookRotation(m_Direction);    
+        if (m_Direction.magnitude < HitDistance)
+        {
+            CanHit = true;
+
+        }
+        else
+        {
+            CanHit = false;
+        }
+        LearningState LS = new LearningState();
+        LS.CanHit = CanHit;
+        LS.PState = OpponentScript.PState;
+        return LS;
+
     }
     /*
     void OnTriggerEnter(Collider col)

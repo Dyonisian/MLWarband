@@ -27,6 +27,8 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     protected Rigidbody m_Rigidbody;
+
+    public SwordScript MySword;
     //Animator m_Animator;
     protected bool m_IsGrounded;
     protected float m_OrigGroundCheckDistance;
@@ -609,7 +611,6 @@ public class PlayerScript : MonoBehaviour
     
     protected IEnumerator PauseAnimation()
     {
-        Debug.Log("Pausing animation");
         yield return new WaitForSeconds(0.3f);
         if (PState == State.Block)
             AnimationControl.Stop();
