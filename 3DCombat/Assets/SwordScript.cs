@@ -75,8 +75,10 @@ public class SwordScript : MonoBehaviour {
                 
                 if (col.CompareTag("PlayerBlock"))
                 {
-
-                    MyEnemyScript.Hit = true;
+                    if (!IsNeat)
+                        MyEnemyScript.Hit = true;
+                    else
+                        MyEnemyScriptNeat.Hit = true;
                     OpponentScript.Invincibility = 0.2f;
 
                     if (!IsNeat)

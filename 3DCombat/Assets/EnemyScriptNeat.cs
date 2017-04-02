@@ -6,7 +6,7 @@ public class EnemyScriptNeat : PlayerScript
     bool aAttack, aLeft, aRight, aForward, aBack, aJump, aBlock;
     bool InRange;
     [SerializeField]
-    public float ActionCooldown { get; set; }
+    public float ActionCooldown;
     bool SetOnce;
     int RState = 0;
     [SerializeField]
@@ -40,6 +40,7 @@ public class EnemyScriptNeat : PlayerScript
     bool ReactionMode;
 
     public bool IsNEAT;
+    float InitialCooldown;
     // Use this for initialization
     void Start()
     {
@@ -75,8 +76,11 @@ public class EnemyScriptNeat : PlayerScript
     }
     void FixedUpdate()
     {
+        InitialCooldown -= Time.deltaTime;
+        if (InitialCooldown > 0.0f)
+            return;
 
-        StateText.text = PState.ToString();
+        //StateText.text = PState.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
         ActionCooldown -= Time.deltaTime;

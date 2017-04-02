@@ -5,7 +5,7 @@ using SharpNeat.Phenomes;
 
 public class NeatScript : UnitController
 {
-
+    [SerializeField]
     bool IsRunning;
     IBlackBox box;
     public EnemyScriptNeat MyEnemyScript;
@@ -29,7 +29,6 @@ public class NeatScript : UnitController
             if (PState != PlayerScript.State.Hit && MyEnemyScript.ActionCooldown <= 0.0f)
             {
                 LS = MyEnemyScript.BuildLearningState();
-
                 PState = LS.PState;
                 UpdateArray();
                 box.Activate();
@@ -57,7 +56,11 @@ public class NeatScript : UnitController
     public override float GetFitness()
     {
         // Implement a meaningful fitness function here, for each unit.
-        float fit = MyHits / OpponentHits;
+        float fit;
+        fit = MyHits - OpponentHits;
+        if (fit < 0)
+            fit = 0;
+
 
         return fit;
     }
@@ -97,16 +100,16 @@ public class NeatScript : UnitController
             //Ignore jump state
             if (i == 2)
                 continue;
-            if (InputArr[i] > max[count, 1])
+            if (OutputArr[i] > max[count, 1])
             {
                 count = 0;
-                max[count, 1] = InputArr[i];//Highest value
+                max[count, 1] = OutputArr[i];//Highest value
                 max[count, 0] = i;//Index of highest value
             }
-            else if (InputArr[i] == max[count, 1])
+            else if (OutputArr[i] == max[count, 1])
             {
                 count++;
-                max[count, 1] = InputArr[i];//QValue
+                max[count, 1] = OutputArr[i];//QValue
                 max[count, 0] = i;//QAction
 
                 //Now one more index has a second action with the same value
