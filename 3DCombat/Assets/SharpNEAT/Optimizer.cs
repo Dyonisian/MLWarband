@@ -33,9 +33,11 @@ public class Optimizer : MonoBehaviour {
 
     private uint Generation;
     private double Fitness;
+    Vector3 InitialPosition;
 
 	// Use this for initialization
 	void Start () {
+        InitialPosition = transform.position;
         Utility.DebugLog = true;
         experiment = new SimpleExperiment();
         XmlDocument xmlConfig = new XmlDocument();
@@ -86,7 +88,7 @@ public class Optimizer : MonoBehaviour {
         _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
         _ea.PausedEvent += new EventHandler(ea_PauseEvent);
 
-        var evoSpeed = 25;
+        var evoSpeed = 5;
 
      //   Time.fixedDeltaTime = 0.045f;
         Time.timeScale = evoSpeed;       
@@ -170,18 +172,24 @@ public class Optimizer : MonoBehaviour {
         ES.OpponentScript = ESN;
         ES.MySword.OpponentScript = ESN;
 
+        transform.position += new Vector3(30, 0, 30);
 
+        //Try to delay activation
 
         ControllerMap.Add(box, controller);
 
         controller.Activate(box);
     }
-
+   
     public void StopEvaluation(IBlackBox box)
     {
         UnitController ct = ControllerMap[box];
-
-        Destroy(ct.gameObject);
+        transform.position = InitialPosition;
+        if (ct.gameObject)
+        {
+            Destroy(ct.GetComponent<EnemyScriptNeat>().Enemy);
+            Destroy(ct.gameObject);
+        }
     }
 
     public void RunBest()

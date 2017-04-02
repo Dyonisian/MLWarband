@@ -36,10 +36,11 @@ public class EnemyScript : PlayerScript {
     bool LastStateWasAttack;
     bool IsReacting;
     bool ReactionMode;
-
+    float InitialCooldown;
     public bool IsNEAT;
 	// Use this for initialization
 	void Start () {
+        InitialCooldown = 0.5f;
         PState = State.Idle;
         IsReacting = false;
         ReactionMode = false;
@@ -71,10 +72,15 @@ public class EnemyScript : PlayerScript {
     }
     void FixedUpdate()
     {
+        InitialCooldown -= Time.deltaTime;
+        if (InitialCooldown > 0.0f)
+            return;
         if (IsNEAT)
             return;
+        if (Enemy == null)
+            Destroy(gameObject);
 
-        StateText.text = PState.ToString();
+        //StateText.text = PState.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
         ActionCooldown -= Time.deltaTime;
@@ -172,6 +178,8 @@ public class EnemyScript : PlayerScript {
         }
         if (PState != State.Hit)
         {
+            if (Enemy == null)
+                Destroy(gameObject);
             m_Direction = Enemy.transform.position - transform.position;
             CurrentDistance = m_Direction.magnitude;
             SeekRotation = Quaternion.LookRotation(m_Direction);
