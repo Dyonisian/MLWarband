@@ -10,12 +10,15 @@ public class SwordScript : MonoBehaviour {
     EnemyScript MyEnemyScript;
     [SerializeField]
     public PlayerScript OpponentScript;
-
+    public EnemyScriptNeat OpponentNeatScript;
     [SerializeField]
 
     EnemyScriptNeat MyEnemyScriptNeat;
-
+    
     public bool IsNeat;
+
+    public int MyHits, MyAttacks, MyBlocks;
+    public int OpponentHits, OpponentAttacks, OpponentBlocks;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     // Use this for initialization
@@ -47,7 +50,8 @@ public class SwordScript : MonoBehaviour {
                     }
                     else
                     {
-                        
+                        //NeatAI Blocked (Confusing variable name)
+                        MyBlocks++;
                     }
 
                 }
@@ -90,7 +94,7 @@ public class SwordScript : MonoBehaviour {
                     }
                     else
                     {
-
+                        OpponentBlocks++;
                     }
                     
                 }
@@ -112,7 +116,7 @@ public class SwordScript : MonoBehaviour {
                         }
                         else
                         {
-                            MyEnemyScriptNeat.ChangeMyHits(1);
+                            MyHits++;
                         }
                     }
 

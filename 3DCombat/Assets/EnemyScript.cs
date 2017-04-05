@@ -597,6 +597,7 @@ public class EnemyScript : PlayerScript {
                 }
                 IsReacting = false;
                 ReactionMode = false;
+                
                 /*
                 if (IsReinforcementLearning)
                 {
@@ -682,7 +683,7 @@ public class EnemyScript : PlayerScript {
 
 
     }
-    protected override IEnumerator IsHit()
+    protected IEnumerator IsHit()
     {
 
         yield return new WaitForSeconds(0.8f);

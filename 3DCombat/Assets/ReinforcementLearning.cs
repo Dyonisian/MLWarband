@@ -378,22 +378,7 @@ public class ReinforcementLearning : MonoBehaviour
             Debug.Log("File data was null!");
         }
     }
-    TestData CreateDatabase()
-    {
-        TestData FileData = (TestData)ScriptableObject.CreateInstance(typeof(TestData));
-        if(FileData!=null)
-        {
-            AssetDatabase.CreateAsset(FileData, Path);
-            AssetDatabase.Refresh();
-            AssetDatabase.SaveAssets();
-            return FileData;
-
-        }
-        else
-        {
-            return null;
-        }
-    }
+   
     void OnApplicationQuit()
     {
         SaveData();

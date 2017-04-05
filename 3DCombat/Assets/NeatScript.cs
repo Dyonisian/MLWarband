@@ -10,8 +10,8 @@ public class NeatScript : UnitController
     IBlackBox box;
     public EnemyScriptNeat MyEnemyScript;
     PlayerScript.State PState, LastPState;
-    public int MyHits { get; set; }
-    public int OpponentHits { get; set; }
+    public int MyHits, MyAttacks, MyBlocks;
+    public int OpponentHits, OpponentAttacks, OpponentBlocks;
     ISignalArray InputArr;
     ISignalArray OutputArr;
     int[] DataArray;
@@ -21,11 +21,11 @@ public class NeatScript : UnitController
     {
         if (IsRunning)
         {
-            //Check hit
+            //Check hit - Done by EnemyScriptNeat
             //Check cooldown
-            //If not on cooldown, do action
+            //If not on cooldown, take action
 
-            //PState = MyEnemyScript.GetState();
+            
             if (PState != PlayerScript.State.Hit && MyEnemyScript.ActionCooldown <= 0.0f)
             {
                 LS = MyEnemyScript.BuildLearningState();
@@ -56,11 +56,41 @@ public class NeatScript : UnitController
     public override float GetFitness()
     {
         // Implement a meaningful fitness function here, for each unit.
-        float fit;
-        fit = MyHits - OpponentHits;
-        if (fit < 0)
-            fit = 0;
+        float fit, dodge, miss, runHitRatio;
 
+        OpponentAttacks = MyEnemyScript.OpponentAttacks;
+        MyAttacks = MyEnemyScript.MyAttacks;
+        OpponentHits = MyEnemyScript.OpponentHits;
+        MyHits = MyEnemyScript.MySword.MyHits;
+        OpponentBlocks = MyEnemyScript.MySword.OpponentBlocks;
+        MyBlocks = MyEnemyScript.OpponentScript.MySword.MyBlocks;
+
+        if (OpponentAttacks == 0)
+            OpponentAttacks = 1;
+        if (OpponentHits == 0)
+            OpponentHits = 1;
+        dodge = OpponentAttacks - OpponentHits;
+
+        miss = MyAttacks - MyHits;
+        fit = (MyHits + dodge + MyBlocks - 0.5f *(miss + OpponentBlocks)) * (MyHits - (dodge * 0.5f));
+        
+
+        runHitRatio = MyHits - (dodge * 0.5f);
+
+        
+
+        if (Random.Range(0.0f, 1.0f) <= 0.05f)
+        Debug.Log("My hits: " + MyHits + " Dodge: " + dodge + " Blocks: " + (MyBlocks - OpponentBlocks) + " Miss: " + miss + " RunHitRatio " + runHitRatio);
+
+        //fit *= runHitRatio;
+        /*
+        if (runHitRatio <= 0.5f)
+            fit = 0.0f;
+        else
+            fit += runHitRatio;
+            */
+        if (fit < 0 )
+            fit = 0;
 
         return fit;
     }
@@ -93,8 +123,6 @@ public class NeatScript : UnitController
         //Action is stored in max[x,0]
         int Action;
 
-
-
         for (int i = 0; i < 13; i++)
         {
             //Ignore jump state
@@ -109,8 +137,8 @@ public class NeatScript : UnitController
             else if (OutputArr[i] == max[count, 1])
             {
                 count++;
-                max[count, 1] = OutputArr[i];//QValue
-                max[count, 0] = i;//QAction
+                max[count, 1] = OutputArr[i];//Highest value
+                max[count, 0] = i;//Index of highest value
 
                 //Now one more index has a second action with the same value
             }
