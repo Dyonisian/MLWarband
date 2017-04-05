@@ -167,11 +167,12 @@ public class Optimizer : MonoBehaviour {
         ESN.Enemy = enemyObj;
         ESN.OpponentScript = ES;
         ESN.MySword.OpponentScript = ES;
+        
 
         ES.Enemy = obj;
         ES.OpponentScript = ESN;
         ES.MySword.OpponentScript = ESN;
-
+        ES.MySword.OpponentNeatScript = ESN;
         transform.position += new Vector3(30, 0, 30);
 
         //Try to delay activation
@@ -222,6 +223,21 @@ public class Optimizer : MonoBehaviour {
 
         GameObject obj = Instantiate(Unit, Unit.transform.position, Unit.transform.rotation) as GameObject;
         UnitController controller = obj.GetComponent<UnitController>();
+
+        EnemyScriptNeat ESN = obj.GetComponent<EnemyScriptNeat>();
+
+
+        GameObject enemyObj = Instantiate(Enemy, transform.position + new Vector3(3, 0, 3), transform.rotation) as GameObject;
+        EnemyScript ES = enemyObj.GetComponent<EnemyScript>();
+
+        ESN.Enemy = enemyObj;
+        ESN.OpponentScript = ES;
+        ESN.MySword.OpponentScript = ES;
+
+        ES.Enemy = obj;
+        ES.OpponentScript = ESN;
+        ES.MySword.OpponentScript = ESN;
+        ES.MySword.OpponentNeatScript = ESN;
 
         ControllerMap.Add(phenome, controller);
 
