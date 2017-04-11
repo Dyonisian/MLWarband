@@ -56,14 +56,34 @@ public class NeatScript : UnitController
     public override float GetFitness()
     {
         // Implement a meaningful fitness function here, for each unit.
-        float fit, dodge, miss, runHitRatio;
-
+        float fit, dodge, miss, runHitRatio, myHitsNew, modifier, modulus, myDodgeNew, myHitsCopy, myDodgeCopy ;
+        myHitsNew = 0;
+        myDodgeNew =0;
+        modifier = 1.0f;
+        modulus = 5;
         OpponentAttacks = MyEnemyScript.OpponentAttacks;
         MyAttacks = MyEnemyScript.MyAttacks;
         OpponentHits = MyEnemyScript.OpponentHits;
         MyHits = MyEnemyScript.MySword.MyHits;
         OpponentBlocks = MyEnemyScript.MySword.OpponentBlocks;
         MyBlocks = MyEnemyScript.OpponentScript.MySword.MyBlocks;
+        if (MyHits == 0)
+            return 0;
+
+        myHitsCopy = MyHits;
+        
+
+        while((float)(myHitsCopy / 2.0f)>0)
+        {
+            modulus = myHitsCopy % 2;
+            if (modulus == 0)
+                modulus = 2;
+            myHitsNew += modulus * modifier;
+            modifier *= 0.5f;
+            myHitsCopy -= 2;
+        }
+
+        
 
         if (OpponentAttacks == 0)
             OpponentAttacks = 1;
@@ -71,16 +91,37 @@ public class NeatScript : UnitController
             OpponentHits = 1;
         dodge = OpponentAttacks - OpponentHits;
 
+        if (dodge == 0)
+            dodge = 1;
+
+        myDodgeCopy = dodge * 0.5f;
+        modifier = 1.0f;
+        while ((float)(myDodgeCopy / 2.0f) > 0)
+        {
+            modulus = myDodgeCopy % 2;
+            if (modulus == 0)
+                modulus = 2;
+            myDodgeNew += modulus * modifier;
+            modifier *= 0.5f;
+            myDodgeCopy -= 2;
+        }
+
         miss = MyAttacks - MyHits;
-        fit = (MyHits + dodge + MyBlocks - 0.5f *(miss + OpponentBlocks)) * (MyHits - (dodge * 0.5f));
+        miss *= 0.5f;
+
+        fit = (myHitsNew + myDodgeNew + MyBlocks - 0.25f *(miss + OpponentBlocks));
+        if(MyHits<1.5f)
+        {
+            fit *= 0.75f;
+        }
         
 
-        runHitRatio = MyHits - (dodge * 0.5f);
+       
 
         
 
         if (Random.Range(0.0f, 1.0f) <= 0.05f)
-        Debug.Log("My hits: " + MyHits + " Dodge: " + dodge + " Blocks: " + (MyBlocks - OpponentBlocks) + " Miss: " + miss + " RunHitRatio " + runHitRatio);
+        Debug.Log("My hits: " + myHitsNew + " Dodge: " + myDodgeNew + " Blocks: " + (MyBlocks - OpponentBlocks) + " Miss: " + miss + " Fitness: "+fit);
 
         //fit *= runHitRatio;
         /*
