@@ -332,6 +332,7 @@ public class EnemyScriptNeat : PlayerScript
                     }
                     ActionCooldown = 2.6f;
                     MyAttacks++;
+                    v = 1;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
 
@@ -356,6 +357,7 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
+                    v = 1;
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -380,6 +382,7 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
+                    v = 1;
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -402,6 +405,7 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
+                    v = 1;
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -609,8 +613,11 @@ public class EnemyScriptNeat : PlayerScript
             //If IsSeeking, face the opponent
             if (IsSeeking)
             {
+                m_Direction = Enemy.transform.position - transform.position;
+                CurrentDistance = m_Direction.magnitude;
+                SeekRotation = Quaternion.LookRotation(m_Direction);
                 TargetRotation = SeekRotation;
-
+                Debug.Log("Seeking!");
             }
             transform.rotation = TargetRotation;
             // Debug.Log(m_Move);

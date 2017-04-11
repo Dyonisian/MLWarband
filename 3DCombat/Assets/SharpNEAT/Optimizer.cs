@@ -188,7 +188,7 @@ public class Optimizer : MonoBehaviour {
         transform.position = InitialPosition;
         if (ct.gameObject)
         {
-            Destroy(ct.GetComponent<EnemyScriptNeat>().Enemy);
+            Destroy(ct.GetComponent<EnemyScriptNeat>().Enemy.gameObject);
             Destroy(ct.gameObject);
         }
     }
@@ -267,6 +267,15 @@ public class Optimizer : MonoBehaviour {
         {
             RunBest();
         }
+        if (GUI.Button(new Rect(120, 10, 200, 40), "Lower Timescale"))
+        {
+            Time.timeScale = Time.timeScale - 1;
+        }
+        if (GUI.Button(new Rect(120, 60, 200, 40), "Increase Timescale"))
+        {
+            Time.timeScale = Time.timeScale + 1;
+        }
+
 
         GUI.Button(new Rect(10, Screen.height - 70, 100, 60), string.Format("Generation: {0}\nFitness: {1:0.00}", Generation, Fitness));
     }

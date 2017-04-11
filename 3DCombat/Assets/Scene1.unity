@@ -393,7 +393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Trials: 1
   TrialDuration: 60
-  StoppingFitness: 10
+  StoppingFitness: 20
   Unit: {fileID: 1492711533199838, guid: c271f62155fd89145850a4f5c9bcb9f0, type: 2}
   Enemy: {fileID: 1035887800330544, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
 --- !u!1 &131784372
@@ -2234,7 +2234,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &777747639
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2294,8 +2294,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 777747638}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.686075, y: 1, z: 2.8429039}
+  m_LocalPosition: {x: 3060, y: 0, z: 3620}
+  m_LocalScale: {x: 1200, y: 1, z: 1200}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -3883,7 +3883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!154 &1367565514
 TerrainCollider:
   m_ObjectHideFlags: 0
@@ -8401,8 +8401,15 @@ MonoBehaviour:
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!136 &2126534116
 CapsuleCollider:
   m_ObjectHideFlags: 0
