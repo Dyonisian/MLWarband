@@ -166,7 +166,7 @@ public class EnemyScriptNeat : PlayerScript
             }
         }
     }
-    public void UpdateForNeat(int RState)
+    public void UpdateForNeat(int RState, float hSpeed, float vSpeed)
     {
         //Some rules for allowing the AI to be reactionary - Used with Reinforcement Learning, not with NEAT
         //Reacts when opponent comes within range
@@ -232,25 +232,37 @@ public class EnemyScriptNeat : PlayerScript
 
             PlayerScript.State tempState = OpponentScript.GetState();
             TryingDodge = false;
+            h = hSpeed;
+            v = vSpeed;
             //Perform the correct action and animation. Set ActionCooldown according to length of animation or duration of action.
             switch (RState)
             {
                 //idle
                 case 0:
-                    PState = State.Idle;
-                    h = 0;
-                    v = 0;
+                    PState = State.Idle;                   
                     AnimationControl.Play("Idle");
                     ActionCooldown = 1.0f;
                     StartCoroutine(ResetSetACOnce(0.2f));
+                    if (Mathf.Abs(v) > Mathf.Abs(h))
+                    {
+                        if (v > 0)
+                            AnimationControl.Play("Run");
+                        else
+                            AnimationControl.Play("BackPedal");
+                    }
+                    else
+                    {
+                        if (h > 0)
+                            AnimationControl.Play("StrafeRight");
+                        else
+                            AnimationControl.Play("StrafeLeft");
+                    }
 
                     break;
                 //walk, or wander
                 case 1:
                     PState = State.Walk;
-                    //Random magnitude of movement
-                    h = Random.Range(-1.0f, 1.0f);
-                    v = Random.Range(-1.0f, 1.0f);
+                    //Random magnitude of movement                   
                     //Random rotation target, so the AI faces a random direction
                     Vector3 RandomTarget;
                     RandomTarget.x = Random.Range(0, 100);
@@ -332,7 +344,6 @@ public class EnemyScriptNeat : PlayerScript
                     }
                     ActionCooldown = 2.6f;
                     MyAttacks++;
-                    v = 1;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
 
@@ -357,7 +368,7 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
-                    v = 1;
+                    
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -382,7 +393,6 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
-                    v = 1;
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -405,7 +415,6 @@ public class EnemyScriptNeat : PlayerScript
                     }
 
                     ActionCooldown = 2.6f;
-                    v = 1;
                     MyAttacks++;
                     StartCoroutine(ResetSetACOnce(ActionCooldown));
                     break;
@@ -617,7 +626,7 @@ public class EnemyScriptNeat : PlayerScript
                 CurrentDistance = m_Direction.magnitude;
                 SeekRotation = Quaternion.LookRotation(m_Direction);
                 TargetRotation = SeekRotation;
-                Debug.Log("Seeking!");
+               // Debug.Log("Seeking!");
             }
             transform.rotation = TargetRotation;
             // Debug.Log(m_Move);

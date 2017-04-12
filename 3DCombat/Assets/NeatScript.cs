@@ -34,7 +34,8 @@ public class NeatScript : UnitController
                 box.Activate();
                 OutputArr = box.OutputSignalArray;
 
-                MyEnemyScript.UpdateForNeat(FindMaxActivation());
+                //9 and 10 are h and v
+                MyEnemyScript.UpdateForNeat(FindMaxActivation(), (float)OutputArr[9], (float)OutputArr[10]);
 
                 LastPState = PState;
 
@@ -110,7 +111,7 @@ public class NeatScript : UnitController
         miss *= 0.5f;
 
         fit = (myHitsNew + myDodgeNew + MyBlocks - 0.25f *(miss + OpponentBlocks));
-        if(MyHits<1.5f)
+        if(MyHits<(fit*0.25f))
         {
             fit *= 0.75f;
         }
@@ -157,18 +158,16 @@ public class NeatScript : UnitController
     }
     public int FindMaxActivation()
     {
-        double[,] max = new double[13, 2];
+        //Limiting states to idle, attacks 1-4, blocks 1-4. Remapping values to the correct action number
+        double[,] max = new double[9, 2];
         int count = 0;
         max[0, 0] = -1000;
         max[0, 1] = -1000;
         //Action is stored in max[x,0]
         int Action;
 
-        for (int i = 0; i < 13; i++)
+        for (int i = 0; i < 9; i++)
         {
-            //Ignore jump state
-            if (i == 2)
-                continue;
             if (OutputArr[i] > max[count, 1])
             {
                 count = 0;
@@ -192,6 +191,10 @@ public class NeatScript : UnitController
         {
             Action = (int)max[0, 0];
         }
+
+        //Remapping to the actions in the state machine
+        if (Action >= 1 && Action <= 8)
+            Action += 2;
 
         return Action;
     }

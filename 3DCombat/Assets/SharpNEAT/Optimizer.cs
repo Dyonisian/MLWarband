@@ -11,7 +11,7 @@ using System.IO;
 public class Optimizer : MonoBehaviour {
 
     const int NUM_INPUTS = 14;
-    const int NUM_OUTPUTS = 13;
+    const int NUM_OUTPUTS = 11;
 
     public int Trials;
     public float TrialDuration;

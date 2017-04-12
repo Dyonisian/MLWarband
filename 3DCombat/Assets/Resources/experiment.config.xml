@@ -7,7 +7,7 @@
         <Scheme>Acyclic</Scheme>
       </Activation>
       <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
-      <ComplexityThreshold>81</ComplexityThreshold>
+      <ComplexityThreshold>75</ComplexityThreshold>
       <Description>Logical XOR. The goal is to reproduce the following logic truth table:
         In1 | In2 | Out
         -----------------
