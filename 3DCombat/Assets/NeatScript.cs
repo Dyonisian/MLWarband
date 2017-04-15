@@ -68,8 +68,7 @@ public class NeatScript : UnitController
         MyHits = MyEnemyScript.MySword.MyHits;
         OpponentBlocks = MyEnemyScript.MySword.OpponentBlocks;
         MyBlocks = MyEnemyScript.OpponentScript.MySword.MyBlocks;
-        if (MyHits == 0)
-            return 0;
+       
 
         myHitsCopy = MyHits;
         
@@ -111,6 +110,7 @@ public class NeatScript : UnitController
         miss *= 0.5f;
 
         fit = (myHitsNew + myDodgeNew + MyBlocks - 0.25f *(miss + OpponentBlocks));
+
         if(MyHits<(fit*0.25f))
         {
             fit *= 0.75f;

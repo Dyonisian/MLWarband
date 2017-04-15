@@ -101,6 +101,8 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     protected GameObject BlockDown;
+
+    public int EnemyAttack1, EnemyAttack2, EnemyAttack3, EnemyAttack4;
     void Start()
     {
         PState = State.Idle;

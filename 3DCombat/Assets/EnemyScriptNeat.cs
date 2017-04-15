@@ -232,15 +232,14 @@ public class EnemyScriptNeat : PlayerScript
 
             PlayerScript.State tempState = OpponentScript.GetState();
             TryingDodge = false;
-            h = hSpeed;
-            v = vSpeed;
+            h = (hSpeed - 0.5f) * 2.0f;
+            v = (vSpeed - 0.5f) * 2.0f;
             //Perform the correct action and animation. Set ActionCooldown according to length of animation or duration of action.
             switch (RState)
             {
                 //idle
                 case 0:
                     PState = State.Idle;                   
-                    AnimationControl.Play("Idle");
                     ActionCooldown = 1.0f;
                     StartCoroutine(ResetSetACOnce(0.2f));
                     if (Mathf.Abs(v) > Mathf.Abs(h))
@@ -256,6 +255,11 @@ public class EnemyScriptNeat : PlayerScript
                             AnimationControl.Play("StrafeRight");
                         else
                             AnimationControl.Play("StrafeLeft");
+                    }
+                    if(v==0 && h==0)
+                    {
+                        AnimationControl.Play("Idle");
+
                     }
 
                     break;

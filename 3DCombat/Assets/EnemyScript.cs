@@ -38,8 +38,9 @@ public class EnemyScript : PlayerScript {
     bool ReactionMode;
     float InitialCooldown;
     public bool IsNEAT;
-	// Use this for initialization
-	void Start () {
+    
+    // Use this for initialization
+    void Start () {
         InitialCooldown = 0.5f;
         PState = State.Idle;
         IsReacting = false;
@@ -64,6 +65,11 @@ public class EnemyScript : PlayerScript {
         LastAnimation = -2000;
         SetOnce = false;
         LastStateWasAttack = false;
+
+        EnemyAttack1 = 1;
+        EnemyAttack2 = 1;
+        EnemyAttack3 = 1;
+        EnemyAttack4 = 1;
     }
 	
 	// Update is called once per frame
@@ -260,7 +266,24 @@ public class EnemyScript : PlayerScript {
                         }
                         else if (RState > 25)
                         {
-                            RState = Random.Range(7, 11);
+                            int defSum = EnemyAttack1 + EnemyAttack2 + EnemyAttack3 + EnemyAttack4  + 1;
+                            RState = Random.Range(1, defSum);
+                            if(RState<=EnemyAttack1)
+                            {
+                                RState = 9;
+                            }
+                            else if(RState<= (EnemyAttack1+EnemyAttack2))
+                            {
+                                RState = 10;
+                            }
+                            else if (RState <= (EnemyAttack1 + EnemyAttack2 + EnemyAttack3))
+                            {
+                                RState = 7;
+                            }
+                            else
+                            {
+                                RState = 8;
+                            }
                         }
                         else
                         {

@@ -117,6 +117,22 @@ public class SwordScript : MonoBehaviour {
                         else
                         {
                             MyHits++;
+                            if(MyEnemyScriptNeat.PState == PlayerScript.State.Attack1)
+                            {
+                                OpponentScript.EnemyAttack1++;
+                            }
+                            else if (MyEnemyScriptNeat.PState == PlayerScript.State.Attack2)
+                            {
+                                OpponentScript.EnemyAttack2++;
+                            }
+                            else if (MyEnemyScriptNeat.PState == PlayerScript.State.Attack3)
+                            {
+                                OpponentScript.EnemyAttack3++;
+                            }
+                            else if (MyEnemyScriptNeat.PState == PlayerScript.State.Attack4)
+                            {
+                                OpponentScript.EnemyAttack4++;
+                            }
                         }
                     }
 
