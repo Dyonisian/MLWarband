@@ -36,6 +36,8 @@ public class EnemyScriptNeat : PlayerScript
     public int MyHits, MyAttacks, MyBlocks;
     public int OpponentHits, OpponentAttacks, OpponentBlocks;
     bool TryingDodge;
+
+    bool Alert;
     // Use this for initialization
     void Start()
     {
@@ -43,6 +45,7 @@ public class EnemyScriptNeat : PlayerScript
         IsReacting = false;
         ReactionMode = false;
         TryingDodge = false;
+        Alert = false;
         //m_Animator = GetComponent<Animator>();
 
         m_CapsuleHeight = m_Capsule.height;
@@ -51,7 +54,6 @@ public class EnemyScriptNeat : PlayerScript
         //m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         //StartCoroutine("AttackCombo");
-        StartCoroutine("Walk");
         HumanPlayer = false;
         BlockLeft.SetActive(false);
         BlockRight.SetActive(false);
@@ -63,6 +65,8 @@ public class EnemyScriptNeat : PlayerScript
         LastAnimation = -2000;
         SetOnce = false;
         LastStateWasAttack = false;
+        StartCoroutine("Walk");
+        StartCoroutine("CheckHealth");
     }
 
     // Update is called once per frame
@@ -77,6 +81,15 @@ public class EnemyScriptNeat : PlayerScript
         if (InitialCooldown > 0.0f)
             return;
 
+        m_Direction = Enemy.transform.position - transform.position;
+        CurrentDistance = m_Direction.magnitude;
+
+        if (CurrentDistance <= 20)
+        {
+            Alert = true;
+        }
+        if (!Alert)
+            return;
 
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
@@ -148,8 +161,6 @@ public class EnemyScriptNeat : PlayerScript
             AnimationControl.SetBool("Hit", true);
             AnimationControl.SetBool("Block", false);
 
-            StopAllCoroutines();
-            //StartCoroutine("IsHit");
             h = 0;
             v = 0;
             StartCoroutine("Walk");
@@ -320,8 +331,6 @@ public class EnemyScriptNeat : PlayerScript
                     //Set Blocking to false, set the correct State, play the correct animation
                     if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                     {
-                        StopAllCoroutines();
-                        StartCoroutine("Walk");
                         if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                             Blocking = false;
 
@@ -341,8 +350,7 @@ public class EnemyScriptNeat : PlayerScript
 
                     if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                     {
-                        StopAllCoroutines();
-                        StartCoroutine("Walk");
+                       
                         if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                             Blocking = false;
 
@@ -366,9 +374,6 @@ public class EnemyScriptNeat : PlayerScript
 
                     if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                     {
-                        StopAllCoroutines();
-
-                        StartCoroutine("Walk");
                         if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                             Blocking = false;
                         PState = State.Attack3;
@@ -391,8 +396,7 @@ public class EnemyScriptNeat : PlayerScript
 
                     if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                     {
-                        StopAllCoroutines();
-                        StartCoroutine("Walk");
+                        
                         if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                             Blocking = false;
                         PState = State.Attack4;

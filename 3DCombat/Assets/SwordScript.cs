@@ -63,6 +63,7 @@ public class SwordScript : MonoBehaviour {
                     {
                         OpponentScript.Invincibility = 0.2f;
                         OpponentScript.Hit = true;
+                        OpponentScript.Health -= 10;
                         
                     }
                 }
@@ -107,6 +108,7 @@ public class SwordScript : MonoBehaviour {
                     {
                         OpponentScript.Invincibility = 0.2f;
                         OpponentScript.Hit = true;
+                        OpponentScript.Health -= 10;
                         if (!IsNeat)
                         {
                             if (MyEnemyScript.IsReinforcementLearning)

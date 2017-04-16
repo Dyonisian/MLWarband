@@ -84,7 +84,7 @@ public class PlayerScript : MonoBehaviour
     protected bool HumanPlayer;
     [SerializeField]
 
-    EnemyScript EScript;
+    public EnemyScript EScript;
     // Use this for initialization
 
     public bool Warband = false;
@@ -101,6 +101,8 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     protected GameObject BlockDown;
+
+    public float Health;
     void Start()
     {
         PState = State.Idle;
@@ -115,6 +117,7 @@ public class PlayerScript : MonoBehaviour
         BlockUp.SetActive(false);
         BlockDown.SetActive(false);
         PDirection = Direction.Up;
+        StartCoroutine("CheckHealth");
     }
 
     // Update is called once per frame
@@ -179,7 +182,6 @@ public class PlayerScript : MonoBehaviour
             AnimationControl.Play("Hit");
             AnimationControl.SetBool("Hit",true);
 
-            StopAllCoroutines();
             Hit = false;
 
 
@@ -225,7 +227,6 @@ public class PlayerScript : MonoBehaviour
                 //Ensure that attack can only be made from certain states
                 if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight || PState == State.Attack1 || PState == State.Attack2 || PState == State.Attack3 || PState == State.Attack4)
                 {
-                    StopAllCoroutines();                    
                     if (Warband)
                     {
                         //Gets attack input and plays correct animation
@@ -425,7 +426,6 @@ public class PlayerScript : MonoBehaviour
             AnimationControl.SetBool("Attack2", false);
             AnimationControl.SetBool("Attack1", false);
 
-            //StartCoroutine("PauseAnimation");
             //Enable the correct directional block
             switch (PDirection)
             {
@@ -490,6 +490,23 @@ public class PlayerScript : MonoBehaviour
             PState = State.Walk;
         }
     }
+     public IEnumerator CheckHealth()
+    {
+        while(true)
+        {
+            yield return new WaitForFixedUpdate();
+            if(HumanPlayer)
+            {
+                if (Health < 100)
+                    Health += Time.deltaTime;
+            }
+            else
+            {
+                if (Health < 0)
+                    Destroy(gameObject);
+            }
+        }
+    }
     //Attack Combo coroutine was used for old combat system
     /*
     protected IEnumerator AttackCombo()
@@ -518,7 +535,6 @@ public class PlayerScript : MonoBehaviour
                         {
                             PState = State.Block;
                             AnimationControl.Play("block");
-                            StartCoroutine("PauseAnimation");
 
                         }
                     }
@@ -681,3 +697,4 @@ public class PlayerScript : MonoBehaviour
     }
     */
 }
+

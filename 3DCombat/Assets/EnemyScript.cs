@@ -52,7 +52,6 @@ public class EnemyScript : PlayerScript {
         //m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         //StartCoroutine("AttackCombo");
-        StartCoroutine("Walk");
         HumanPlayer = false;
         BlockLeft.SetActive(false);
         BlockRight.SetActive(false);
@@ -64,10 +63,13 @@ public class EnemyScript : PlayerScript {
         LastAnimation = -2000;
         SetOnce = false;
         LastStateWasAttack = false;
+        StartCoroutine("Walk");
+        StartCoroutine(CheckHealth());
+
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
         
     }
     void FixedUpdate()
@@ -160,11 +162,11 @@ public class EnemyScript : PlayerScript {
 
 
 
-            StopAllCoroutines();
+           
+
             //StartCoroutine("IsHit");
             h = 0;
             v = 0;
-            StartCoroutine("Walk");
             ActionCooldown = 3.0f;
             if(transform.root.CompareTag("Enemy"))
             if (IsReinforcementLearning)
@@ -381,8 +383,9 @@ public class EnemyScript : PlayerScript {
                         
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
-                            StopAllCoroutines();
-                            StartCoroutine("Walk");
+                          
+                            
+
                             if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                                 Blocking = false;
 
@@ -404,8 +407,8 @@ public class EnemyScript : PlayerScript {
                         
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
-                            StopAllCoroutines();                          
-                            StartCoroutine("Walk");
+                            
+
                             if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                                 Blocking = false;
 
@@ -426,9 +429,8 @@ public class EnemyScript : PlayerScript {
                         
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
-                            StopAllCoroutines();
-                            
-                            StartCoroutine("Walk");
+                           
+
                             if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                                 Blocking = false;
                             PState = State.Attack3;
@@ -448,8 +450,7 @@ public class EnemyScript : PlayerScript {
                         
                         if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                         {
-                            StopAllCoroutines();                            
-                            StartCoroutine("Walk");
+                           
                             if (PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight)
                                 Blocking = false;
                             PState = State.Attack4;

@@ -2556,8 +2556,15 @@ MonoBehaviour:
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!114 &114298099205058700
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2571,6 +2578,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsRunning: 0
   MyEnemyScript: {fileID: 114938280508123746}
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!114 &114398493881610562
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2616,8 +2629,15 @@ MonoBehaviour:
   MyPScript: {fileID: 114938280508123746}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 114938280508123746}
   IsNeat: 1
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!114 &114938280508123746
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2638,10 +2658,10 @@ MonoBehaviour:
   m_AnimSpeedMultiplier: 1
   m_GroundCheckDistance: 0.1
   m_Rigidbody: {fileID: 54591745824931736}
-  MySword: {fileID: 114911854312876470}
   m_Capsule: {fileID: 136749969183062674}
   Hit: 0
   AnimationControl: {fileID: 95282627494851790}
+  MySword: {fileID: 114911854312876470}
   SwordAnim: {fileID: 0}
   Attack1: {fileID: 0}
   Invincibility: 0
@@ -2658,17 +2678,22 @@ MonoBehaviour:
   BlockRight: {fileID: 1302259296812894}
   BlockUp: {fileID: 1780072407493404}
   BlockDown: {fileID: 1623097874543074}
+  Health: 100
   ActionCooldown: 0
   OpponentScript: {fileID: 0}
   IsSeeking: 0
   HitDistance: 0
   CurrentDistance: 0
   CanHit: 0
-  RLScript: {fileID: 0}
-  RLMoveScript: {fileID: 0}
   NScript: {fileID: 114298099205058700}
   IsReinforcementLearning: 0
   IsNEAT: 1
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!114 &114941249221576154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2900,7 +2925,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: aec45a1d36b61544682cbf2b18bc0785, type: 2}
+  - {fileID: 2100000, guid: 4225b84d35954594a9ab9f3c7724b876, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

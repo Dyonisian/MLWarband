@@ -102,8 +102,7 @@ namespace UnityStandardAssets.Utility
                 m_TargetAngles.y = Mathf.Lerp(-rotationRange.y*0.5f, rotationRange.y*0.5f, inputH/Screen.width);
                 m_TargetAngles.x = Mathf.Lerp(-rotationRange.x*0.5f, rotationRange.x*0.5f, inputV/Screen.height);
             }
-            m_TargetAngles.x = 0;
-            m_TargetAngles.z = 0;
+
             // smoothly interpolate current values to target angles
             m_FollowAngles = Vector3.SmoothDamp(m_FollowAngles, m_TargetAngles, ref m_FollowVelocity, dampingTime);
 
