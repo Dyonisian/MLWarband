@@ -2538,6 +2538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
   PScript: {fileID: 114361526262987470}
   IsPlayer: 1
 --- !u!114 &114143285802704750
@@ -2552,6 +2553,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
   PScript: {fileID: 114361526262987470}
   IsPlayer: 1
 --- !u!114 &114361526262987470
@@ -2577,6 +2579,7 @@ MonoBehaviour:
   m_Capsule: {fileID: 136874808682571920}
   Hit: 0
   AnimationControl: {fileID: 95626343680407612}
+  MySword: {fileID: 0}
   SwordAnim: {fileID: 0}
   Attack1: {fileID: 0}
   Invincibility: 0
@@ -2605,6 +2608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
   PScript: {fileID: 114361526262987470}
   IsPlayer: 1
 --- !u!114 &114581101506622488
@@ -2636,6 +2640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
   PScript: {fileID: 114361526262987470}
   IsPlayer: 1
 --- !u!114 &114722281840677198
@@ -2650,8 +2655,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 198484445280691308}
-  PScript: {fileID: 114361526262987470}
-  EScript: {fileID: 0}
+  MyPScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
+  OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
+  MyEnemyScriptNeat: {fileID: 0}
+  IsNeat: 0
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!114 &114836825392649072
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2664,8 +2679,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 198484445280691308}
-  PScript: {fileID: 114361526262987470}
-  EScript: {fileID: 0}
+  MyPScript: {fileID: 0}
+  MyEnemyScript: {fileID: 0}
+  OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
+  MyEnemyScriptNeat: {fileID: 0}
+  IsNeat: 0
+  MyHits: 0
+  MyAttacks: 0
+  MyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  OpponentBlocks: 0
 --- !u!124 &124919976061401148
 Behaviour:
   m_ObjectHideFlags: 1
