@@ -16,9 +16,11 @@ public class ReinforcementLearning : MonoBehaviour
 
     EnemyScript.LearningState LastLS;
     bool CanHit = false;
+    [SerializeField]
+    public bool PlayMode;
     public int LoadFromFile = 0;
     public float LearningRate = 0.5f;
-    public int FileNo;
+    public string FileNo;
     public float Exploration;
     public int Iterations, Decisions;
     private float InitialExploration;
@@ -103,9 +105,12 @@ public class ReinforcementLearning : MonoBehaviour
     string Path;
     [SerializeField]
     public ArrayLayout InspectorQValues;
+
+   
     // Use this for initialization
     void Start()
     {
+
         Iterations = 0;
         Decisions = 0;
         QLastAction = -1;
@@ -173,8 +178,10 @@ public class ReinforcementLearning : MonoBehaviour
                 Iterations--;
             }
         }
-        
+        if(!PlayMode)
         Exploration = InitialExploration - (Iterations/200.0f);
+        else
+            Exploration = InitialExploration - (Iterations / 20.0f);
         QState = (int)LS.PState;
         //The states where CanHit is true start from 13
         if (LS.CanHit)
@@ -270,7 +277,7 @@ public class ReinforcementLearning : MonoBehaviour
         
     }
     
-    void SaveData()
+    public void SaveData()
     {
         QData.Q0 = InspectorQValues.rows[0].row;
         QData.Q1 = InspectorQValues.rows[1].row;

@@ -5,32 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo00
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo01
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo02
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo03
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo04
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo05
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo06
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo07
-      (960x600px).unity
-  - enabled: 0
-    path: Assets/GUI Animator/GUI Animator FREE/Demo (CSharp)/Scenes/GA FREE - Demo08
-      (960x600px).unity
   - enabled: 1
-    path: Assets/Scene1.unity
+    path: Assets/Level0Tutorial.unity
+  - enabled: 1
+    path: Assets/Level1NEAT.unity
+  - enabled: 1
+    path: Assets/Level2.unity
+  - enabled: 1
+    path: Assets/Level3.unity
+  - enabled: 1
+    path: Assets/Level4.unity
+  - enabled: 1
+    path: Assets/Level5.unity

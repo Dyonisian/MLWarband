@@ -21,6 +21,9 @@ public class SwordScript : MonoBehaviour {
     public int OpponentHits, OpponentAttacks, OpponentBlocks;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
+    [SerializeField]
+    SwordAudio AudioScript;
+
     // Use this for initialization
     void Start () {
 	
@@ -32,6 +35,7 @@ public class SwordScript : MonoBehaviour {
 	}
     void OnTriggerEnter(Collider col)
     {
+        AudioScript.PlayHit();
         if (MyPScript.GetState() == PlayerScript.State.Attack1 || MyPScript.GetState() == PlayerScript.State.Attack2 || MyPScript.GetState() == PlayerScript.State.Attack3 || MyPScript.GetState() == PlayerScript.State.Attack4)
         {
             if (transform.root.CompareTag ("Player"))
@@ -115,11 +119,14 @@ public class SwordScript : MonoBehaviour {
                             {
                                 MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
                             }
+                            MyEnemyScript.v = Random.Range(-0.2f,-1);
                         }
                         else
                         {
                             MyHits++;
+                            //MyEnemyScriptNeat.v = Random.Range(-0.2f, -1);
                         }
+
                     }
 
                 }

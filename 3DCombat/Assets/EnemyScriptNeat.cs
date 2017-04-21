@@ -67,6 +67,7 @@ public class EnemyScriptNeat : PlayerScript
         LastStateWasAttack = false;
         StartCoroutine("Walk");
         StartCoroutine("CheckHealth");
+        IsDead = false;
     }
 
     // Update is called once per frame
@@ -80,7 +81,11 @@ public class EnemyScriptNeat : PlayerScript
         InitialCooldown -= Time.deltaTime;
         if (InitialCooldown > 0.0f)
             return;
-
+        if (IsDead)
+        {
+            ActionCooldown = 3.0f;
+            return;
+        }
         m_Direction = Enemy.transform.position - transform.position;
         CurrentDistance = m_Direction.magnitude;
 
@@ -131,12 +136,17 @@ public class EnemyScriptNeat : PlayerScript
         if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.IsInTransition(0))
         {
             PState = State.Idle;
-            SetACOnce = true;
+            
+            
+
+        }
+        if (!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
+        {
+            //Ensure the "hit" animation only plays once
             if (AnimationControl.GetBool("Hit"))
             {
                 AnimationControl.SetBool("Hit", false);
-                Invincibility = 0.1f;
-                //Sets cooldown back to 0 as an attack animation ended and another action is possible now
+                Invincibility = 0.2f;
                 if (SetOnce)
                 {
                     ActionCooldown = 0.0f;
@@ -144,6 +154,8 @@ public class EnemyScriptNeat : PlayerScript
                     SetACOnce = true;
                     SetOnce = false;
                 }
+                
+
             }
 
         }
@@ -160,6 +172,10 @@ public class EnemyScriptNeat : PlayerScript
             AnimationControl.Play("Hit");
             AnimationControl.SetBool("Hit", true);
             AnimationControl.SetBool("Block", false);
+            AnimationControl.SetBool("Attack1", false);
+            AnimationControl.SetBool("Attack2", false);
+            AnimationControl.SetBool("Attack3", false);
+            AnimationControl.SetBool("Attack4", false);
 
             h = 0;
             v = 0;
@@ -621,7 +637,7 @@ public class EnemyScriptNeat : PlayerScript
                 CurrentDistance = m_Direction.magnitude;
                 SeekRotation = Quaternion.LookRotation(m_Direction);
                 TargetRotation = SeekRotation;
-                Debug.Log("Seeking!");
+                //Debug.Log("Seeking!");
             }
             transform.rotation = TargetRotation;
             // Debug.Log(m_Move);
@@ -677,5 +693,13 @@ public class EnemyScriptNeat : PlayerScript
     {
         NScript.OpponentBlocks = NScript.OpponentBlocks + h;
 
+    }
+    public void Die()
+    {
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<CapsuleCollider>().enabled = false;
+        IsDead = true;
+        AnimationControl.Play("Death");
+        Destroy(gameObject, 3.0f);
     }
 }
