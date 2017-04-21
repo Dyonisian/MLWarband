@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class PlayerScript : MonoBehaviour
@@ -66,7 +67,8 @@ public class PlayerScript : MonoBehaviour
     protected float m_MoveNormal = 4.0f;
 
 
-    protected float h, v, h2, v2;
+    protected float h,  h2, v2;
+    public float v;
 
     public enum State { Idle, Walk, Jump, Attack, BlockUp, BlockDown, BlockLeft, BlockRight, Hit, Attack1, Attack2, Attack3, Attack4 };
     public enum Direction { Left, Right, Up, Down };
@@ -102,7 +104,15 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     protected GameObject BlockDown;
 
+    [SerializeField]
+    KnightAudio AudioScript;
+
     public float Health;
+    public float RetreatChance;
+    public bool IsDead, LockOn;
+
+    [SerializeField]
+    Slider HealthBar;
     void Start()
     {
         PState = State.Idle;
@@ -118,6 +128,11 @@ public class PlayerScript : MonoBehaviour
         BlockDown.SetActive(false);
         PDirection = Direction.Up;
         StartCoroutine("CheckHealth");
+
+        if(SceneManager.GetActiveScene().buildIndex!=0)
+        {
+            Health = PlayerPrefs.GetFloat("Health");
+        }
     }
 
     // Update is called once per frame
@@ -129,6 +144,7 @@ public class PlayerScript : MonoBehaviour
     void FixedUpdate()
     {
        
+        HealthBar.value = Health;
         //For debug purposes
         //StateText.text = PState.ToString();
         //DirectionText.text = PDirection.ToString();
@@ -161,6 +177,13 @@ public class PlayerScript : MonoBehaviour
         {
             PState = State.Idle;
             //Ensure the "hit" animation only plays once
+           
+
+        }
+
+        if (!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
+        {
+            //Ensure the "hit" animation only plays once
             if (AnimationControl.GetBool("Hit"))
             {
                 AnimationControl.SetBool("Hit", false);
@@ -181,8 +204,15 @@ public class PlayerScript : MonoBehaviour
             }
             AnimationControl.Play("Hit");
             AnimationControl.SetBool("Hit",true);
+            AnimationControl.SetBool("Attack1", false);
+            AnimationControl.SetBool("Attack2", false);
+            AnimationControl.SetBool("Attack3", false);
+            AnimationControl.SetBool("Attack4", false);
+            AnimationControl.SetBool("Block", false);
 
+            AudioScript.PlayGrunt(0.8f);
             Hit = false;
+
 
 
         }
@@ -262,6 +292,8 @@ public class PlayerScript : MonoBehaviour
         // convert the world relative moveInput vector into a local-relative
         // turn amount and forward amount required to head in the desired
         // direction.
+      
+
         if (move.magnitude > 1f) move.Normalize();
         //move = transform.InverseTransformDirection(move);
         CheckGroundStatus();
@@ -359,7 +391,13 @@ public class PlayerScript : MonoBehaviour
         }
         else
         {
+            
             //Set correct state and play correct animation based on direction input
+            if(PState == State.Idle || PState == State.Walk)
+            {
+                AudioScript.PlaySlash();
+                AudioScript.PlayGrunt(0.3f);
+            }
             switch (PDirection)
             {
                 case Direction.Up:
@@ -390,6 +428,7 @@ public class PlayerScript : MonoBehaviour
                 default:
                     break;
             }
+           
         }
     }
     void GetAttackDirection()
@@ -490,22 +529,29 @@ public class PlayerScript : MonoBehaviour
             PState = State.Walk;
         }
     }
-     public IEnumerator CheckHealth()
+     public virtual IEnumerator CheckHealth()
     {
         while(true)
         {
             yield return new WaitForFixedUpdate();
-            if(HumanPlayer)
-            {
-                if (Health < 100)
-                    Health += Time.deltaTime;
-            }
-            else
-            {
+            
                 if (Health < 0)
-                    Destroy(gameObject);
-            }
+                {
+                   
+                    Die();
+                }
+            
+
         }
+    }
+    public void Die()
+    {
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<CapsuleCollider>().enabled = false;
+        IsDead = true;
+        AnimationControl.Play("Death");
+        if(!HumanPlayer)
+        Destroy(gameObject, 3.0f);
     }
     //Attack Combo coroutine was used for old combat system
     /*

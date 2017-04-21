@@ -189,8 +189,6 @@ MonoBehaviour:
   autoZeroVerticalOnMobile: 1
   autoZeroHorizontalOnMobile: 0
   relative: 1
-  LockOn: 0
-  PScript: {fileID: 0}
 --- !u!1001 &28735676
 Prefab:
   m_ObjectHideFlags: 0
@@ -636,28 +634,11 @@ Prefab:
     - target: {fileID: 224301528358690560, guid: 2777831cc8795c841ae6eebdd6492b97,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224301528358690560, guid: 2777831cc8795c841ae6eebdd6492b97,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1073104528730396, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1198594613887896, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534152933945464, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114058460873039694, guid: 2777831cc8795c841ae6eebdd6492b97,
-        type: 2}
-      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1441,19 +1422,7 @@ Prefab:
       propertyPath: PotionText
       value: 
       objectReference: {fileID: 135208481}
-    - target: {fileID: 114581101506622488, guid: 6ade5ed1ddee413489a9ceb605d141b3,
-        type: 2}
-      propertyPath: PScript
-      value: 
-      objectReference: {fileID: 403280616}
-    - target: {fileID: 114722281840677198, guid: 6ade5ed1ddee413489a9ceb605d141b3,
-        type: 2}
-      propertyPath: EnemyBlood
-      value: 
-      objectReference: {fileID: 1938818010960792, guid: fc9ca3ea888930a488684a159d000b75,
-        type: 2}
-    m_RemovedComponents:
-    - {fileID: 82672249883727822, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &207421714 stripped
@@ -4972,7 +4941,7 @@ Prefab:
     - target: {fileID: 114631410955992712, guid: 01ef89a4e79964340b5f7a5ebd9085ff,
         type: 2}
       propertyPath: RetreatChance
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 114432240361768508, guid: 01ef89a4e79964340b5f7a5ebd9085ff,
         type: 2}
@@ -17945,19 +17914,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 1993734074}
-  EnemyBlood: {fileID: 0}
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  PlayerHits: 0
+  MyHits: 0
   MyAttacks: 0
-  EnemyBlocks: 0
+  MyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  PlayerBlocks: 0
+  OpponentBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &2126534116
 CapsuleCollider:

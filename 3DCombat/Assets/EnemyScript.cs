@@ -65,6 +65,7 @@ public class EnemyScript : PlayerScript {
         LastStateWasAttack = false;
         StartCoroutine("Walk");
         StartCoroutine(CheckHealth());
+        IsDead = false;
 
     }
 
@@ -81,6 +82,8 @@ public class EnemyScript : PlayerScript {
             return;
         if (Enemy == null)
             Destroy(gameObject);
+        if (IsDead)
+            return;
 
         //StateText.text = PState.ToString();
         DebugTimer += Time.deltaTime;
@@ -121,7 +124,6 @@ public class EnemyScript : PlayerScript {
         if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.IsInTransition(0))
         {
             PState = State.Idle;
-            SetACOnce = true;
             /*
             if(SetOnce)
             {
@@ -131,10 +133,16 @@ public class EnemyScript : PlayerScript {
                 SetOnce = false;
             }
             */
+            
+
+        }
+        if (!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
+        {
+            //Ensure the "hit" animation only plays once
             if (AnimationControl.GetBool("Hit"))
             {
                 AnimationControl.SetBool("Hit", false);
-                Invincibility = 0.3f;
+                Invincibility = 0.2f;
                 if (SetOnce)
                 {
                     ActionCooldown = 0.0f;
@@ -142,6 +150,11 @@ public class EnemyScript : PlayerScript {
                     SetACOnce = true;
                     SetOnce = false;
                 }
+                if(Random.Range(1,101)<=RetreatChance)
+                {
+                    v = Random.Range(RetreatChance * 0.01f, 1) * (-1.0f);
+                }
+            
             }
 
         }
@@ -159,10 +172,14 @@ public class EnemyScript : PlayerScript {
             AnimationControl.Play("Hit");
             AnimationControl.SetBool("Hit",true);
             AnimationControl.SetBool("Block", false);
+            AnimationControl.SetBool("Attack1", false);
+            AnimationControl.SetBool("Attack2", false);
+            AnimationControl.SetBool("Attack3", false);
+            AnimationControl.SetBool("Attack4", false);
 
 
 
-           
+
 
             //StartCoroutine("IsHit");
             h = 0;
@@ -708,4 +725,25 @@ public class EnemyScript : PlayerScript {
         SetACOnce = true;
         yield return null;
     }
+    public override IEnumerator CheckHealth()
+    {
+
+        while (true)
+        {
+            yield return new WaitForFixedUpdate();
+           
+                if (Health < 0)
+                {
+                    if (IsReinforcementLearning)
+                    {
+                        if(RLScript.PlayMode)
+                        RLScript.SaveData();
+                    }
+                    Die();
+                }
+            
+        }
+    }
+    
+    
 }
