@@ -189,6 +189,8 @@ MonoBehaviour:
   autoZeroVerticalOnMobile: 1
   autoZeroHorizontalOnMobile: 0
   relative: 1
+  LockOn: 0
+  PScript: {fileID: 0}
 --- !u!1001 &28735676
 Prefab:
   m_ObjectHideFlags: 0
@@ -1300,6 +1302,11 @@ Prefab:
       propertyPath: PotionText
       value: 
       objectReference: {fileID: 968530455}
+    - target: {fileID: 114581101506622488, guid: 6ade5ed1ddee413489a9ceb605d141b3,
+        type: 2}
+      propertyPath: PScript
+      value: 
+      objectReference: {fileID: 403280616}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_IsPrefabParent: 0
@@ -6107,12 +6114,12 @@ Prefab:
     - target: {fileID: 224301528358690560, guid: 2777831cc8795c841ae6eebdd6492b97,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224301528358690560, guid: 2777831cc8795c841ae6eebdd6492b97,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
@@ -18281,12 +18288,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &2126534116
 CapsuleCollider:

@@ -17,8 +17,8 @@ public class SwordScript : MonoBehaviour {
     
     public bool IsNeat;
 
-    public int MyHits, MyAttacks, MyBlocks;
-    public int OpponentHits, OpponentAttacks, OpponentBlocks;
+    public int PlayerHits, MyAttacks, EnemyBlocks;
+    public int OpponentHits, OpponentAttacks, PlayerBlocks;
     enum State { Idle, Walk, Jump, Attack1, Attack2, Attack3, Block, Hit };
 
     [SerializeField]
@@ -47,16 +47,21 @@ public class SwordScript : MonoBehaviour {
                     OpponentScript.Invincibility = 0.2f;
                     if (!IsNeat)
                     {
-                        if (MyEnemyScript.IsReinforcementLearning)
+                        if (MyEnemyScript != null)
                         {
-                            MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                            if (MyEnemyScript.IsReinforcementLearning)
+                            {
+                                MyEnemyScript.RLGiveReward(0.3f, MyPScript.GetState(), true);
+                            }
                         }
                     }
                     else
                     {
-                        //NeatAI Blocked (Confusing variable name)
-                        MyBlocks++;
+                        
                     }
+                    //AI Blocked (Confusing variable name)
+
+                    EnemyBlocks++;
 
                 }
                 else if (col.CompareTag("Enemy"))
@@ -70,6 +75,7 @@ public class SwordScript : MonoBehaviour {
                         OpponentScript.Health -= 10;
                         
                     }
+                    PlayerHits++;
                 }
                 else if (col.CompareTag("EnemySword"))
                 {
@@ -92,14 +98,17 @@ public class SwordScript : MonoBehaviour {
 
                     if (!IsNeat)
                     {
-                        if (MyEnemyScript.IsReinforcementLearning)
+                        if (MyEnemyScript != null)
                         {
-                            MyEnemyScript.RLGiveReward(-0.3f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                            if (MyEnemyScript.IsReinforcementLearning)
+                            {
+                                MyEnemyScript.RLGiveReward(-0.3f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                            }
                         }
                     }
                     else
                     {
-                        OpponentBlocks++;
+                        PlayerBlocks++;
                     }
                     
                 }
@@ -107,7 +116,6 @@ public class SwordScript : MonoBehaviour {
                 {
                     Particles.Play();
                     StopParticles();
-                   
                     if (OpponentScript.Invincibility <= 0.0f )
                     {
                         OpponentScript.Invincibility = 0.2f;
@@ -115,15 +123,20 @@ public class SwordScript : MonoBehaviour {
                         OpponentScript.Health -= 10;
                         if (!IsNeat)
                         {
-                            if (MyEnemyScript.IsReinforcementLearning)
+                            if (MyEnemyScript != null)
                             {
-                                MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                                if (MyEnemyScript.IsReinforcementLearning)
+                                {
+                                    MyEnemyScript.RLGiveReward(1.0f, OpponentScript.GetState(), MyEnemyScript.CanHit);
+                                }
+                                MyEnemyScript.v = Random.Range(-0.2f, -1);
                             }
-                            MyEnemyScript.v = Random.Range(-0.2f,-1);
+                            OpponentHits++;
+
                         }
                         else
                         {
-                            MyHits++;
+                            PlayerHits++;
                             //MyEnemyScriptNeat.v = Random.Range(-0.2f, -1);
                         }
 
