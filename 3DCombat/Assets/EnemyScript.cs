@@ -739,6 +739,7 @@ public class EnemyScript : PlayerScript {
                         if(RLScript.PlayMode)
                         RLScript.SaveData();
                     }
+                Health = 100;
                     Die();
                 }
             

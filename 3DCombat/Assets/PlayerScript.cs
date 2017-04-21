@@ -3,7 +3,7 @@ using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using System.IO;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -113,6 +113,17 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     Slider HealthBar;
+
+    [SerializeField]
+    string Path;
+
+    public class Stats
+    {
+        public string Name;
+        public int PlayerHits;
+        public int AIHits;
+    }
+
     void Start()
     {
         PState = State.Idle;
@@ -133,6 +144,7 @@ public class PlayerScript : MonoBehaviour
         {
             Health = PlayerPrefs.GetFloat("Health");
         }
+        Path = "Assets/PlayerData"  + ".json";
     }
 
     // Update is called once per frame
@@ -537,12 +549,14 @@ public class PlayerScript : MonoBehaviour
             
                 if (Health < 0)
                 {
-                   
+                Health = 100;
                     Die();
+                break;
                 }
             
 
         }
+        yield return null;
     }
     public void Die()
     {
@@ -550,8 +564,36 @@ public class PlayerScript : MonoBehaviour
         GetComponent<CapsuleCollider>().enabled = false;
         IsDead = true;
         AnimationControl.Play("Death");
-        if(!HumanPlayer)
-        Destroy(gameObject, 3.0f);
+        if (!HumanPlayer)
+        {
+            SaveStats(gameObject.name, MySword, Enemy.GetComponent<PlayerScript>().MySword);
+            Destroy(gameObject, 3.0f);
+
+            
+        }
+    }
+    public void SaveStats(string Name, SwordScript OpponentSword, SwordScript PSword)
+    {
+        Stats PS = new Stats();
+        Path = "Assets/PlayerData" + ".json";
+
+        PS.Name = (SceneManager.GetActiveScene().name + " " + Name);
+        //PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + " " + Name + " PlayerBlocks", MySword.PlayerBlocks);
+        PS.PlayerHits = PSword.PlayerHits;
+        PS.AIHits = OpponentSword.OpponentHits;
+        
+
+        string FileData = JsonUtility.ToJson(PS);
+         
+
+        //FS = File.Open("RL" + FileNo,FileMode.OpenOrCreate,FileAccess.ReadWrite);
+        if (!File.Exists(Path))
+            File.WriteAllText(Path, FileData);
+        else
+            File.AppendAllText(Path, FileData);
+
+        PSword.PlayerHits = 0;
+
     }
     //Attack Combo coroutine was used for old combat system
     /*

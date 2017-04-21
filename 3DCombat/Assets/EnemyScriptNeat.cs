@@ -694,12 +694,5 @@ public class EnemyScriptNeat : PlayerScript
         NScript.OpponentBlocks = NScript.OpponentBlocks + h;
 
     }
-    public void Die()
-    {
-        GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<CapsuleCollider>().enabled = false;
-        IsDead = true;
-        AnimationControl.Play("Death");
-        Destroy(gameObject, 3.0f);
-    }
+   
 }

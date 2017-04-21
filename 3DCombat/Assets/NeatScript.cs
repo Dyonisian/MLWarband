@@ -64,9 +64,9 @@ public class NeatScript : UnitController
         OpponentAttacks = MyEnemyScript.OpponentAttacks;
         MyAttacks = MyEnemyScript.MyAttacks;
         OpponentHits = MyEnemyScript.OpponentHits;
-        MyHits = MyEnemyScript.MySword.MyHits;
-        OpponentBlocks = MyEnemyScript.MySword.OpponentBlocks;
-        MyBlocks = MyEnemyScript.OpponentScript.MySword.MyBlocks;
+        MyHits = MyEnemyScript.MySword.PlayerHits;
+        OpponentBlocks = MyEnemyScript.MySword.PlayerBlocks;
+        MyBlocks = MyEnemyScript.OpponentScript.MySword.EnemyBlocks;
        
 
         myHitsCopy = MyHits;
