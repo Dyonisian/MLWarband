@@ -278,6 +278,8 @@ MonoBehaviour:
   autoZeroVerticalOnMobile: 1
   autoZeroHorizontalOnMobile: 0
   relative: 1
+  LockOn: 0
+  PScript: {fileID: 0}
 --- !u!1 &29027241
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,6 +4485,18 @@ Prefab:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1534152933945464, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1198594613887896, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1073104528730396, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
   m_IsPrefabParent: 0
@@ -4569,6 +4583,11 @@ Prefab:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 33f22e98034a41b498d126818e2fc267, type: 3}
+    - target: {fileID: 114632894881653376, guid: 6ade5ed1ddee413489a9ceb605d141b3,
+        type: 2}
+      propertyPath: PotionCount
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_IsPrefabParent: 0
@@ -12553,12 +12572,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &1017991945
 CapsuleCollider:
@@ -13821,12 +13840,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &1246151610
 CapsuleCollider:
@@ -23285,12 +23304,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &2126534116
 CapsuleCollider:

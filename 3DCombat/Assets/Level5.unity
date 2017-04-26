@@ -1307,7 +1307,8 @@ Prefab:
       propertyPath: PScript
       value: 
       objectReference: {fileID: 403280616}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 82672249883727822, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &207421714 stripped
