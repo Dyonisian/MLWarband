@@ -137,6 +137,8 @@ public class SwordScript : MonoBehaviour {
                         else
                         {
                             PlayerHits++;
+                            OpponentHits++;
+
                             //MyEnemyScriptNeat.v = Random.Range(-0.2f, -1);
                         }
 

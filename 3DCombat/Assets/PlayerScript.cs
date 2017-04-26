@@ -576,7 +576,7 @@ public class PlayerScript : MonoBehaviour
     {
         Stats PS = new Stats();
         Path = "Assets/PlayerData" + ".json";
-
+        Path = Application.persistentDataPath + string.Format("/PlayerData.json");
         PS.Name = (SceneManager.GetActiveScene().name + " " + Name);
         //PlayerPrefs.SetInt(SceneManager.GetActiveScene().name + " " + Name + " PlayerBlocks", MySword.PlayerBlocks);
         PS.PlayerHits = PSword.PlayerHits;

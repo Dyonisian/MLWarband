@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+
 using UnityEditor;
+#endif
 using System.IO;
 
 public class ReinforcementLearningMove : MonoBehaviour
@@ -376,22 +379,7 @@ public class ReinforcementLearningMove : MonoBehaviour
             Debug.Log("File data was null!");
         }
     }
-    TestData CreateDatabase()
-    {
-        TestData FileData = (TestData)ScriptableObject.CreateInstance(typeof(TestData));
-        if (FileData != null)
-        {
-            AssetDatabase.CreateAsset(FileData, Path);
-            AssetDatabase.Refresh();
-            AssetDatabase.SaveAssets();
-            return FileData;
-
-        }
-        else
-        {
-            return null;
-        }
-    }
+   
     void OnApplicationQuit()
     {
         SaveData();

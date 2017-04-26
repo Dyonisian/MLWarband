@@ -17,8 +17,8 @@ public class PotionScript : MonoBehaviour {
 	void Start () {
 		if(SceneManager.GetActiveScene().buildIndex == 0)
         {
-            PotionCount = 3;
-            PlayerPrefs.SetInt("Potions", 3);
+            
+            PlayerPrefs.SetInt("Potions", PotionCount);
             PlayerPrefs.Save();
         }
         else
@@ -44,6 +44,18 @@ public class PotionScript : MonoBehaviour {
             }
 
         }
+        if(Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            PotionCount++;
+            PlayerPrefs.SetInt("Potions", PotionCount);
+            PlayerPrefs.Save();
+            PotionText.text = "x" + PotionCount;
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
 
     }
 }

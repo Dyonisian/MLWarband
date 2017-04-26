@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+
 using UnityEditor;
+#endif
 using System.IO;
 
 public class ReinforcementLearning : MonoBehaviour
@@ -117,7 +120,9 @@ public class ReinforcementLearning : MonoBehaviour
         QLastState = -1;
         RewardReceived = false;
         InitialExploration = Exploration;
-        Path = "Assets/RL" + FileNo + ".json";
+       // Path = "Assets/RL" + FileNo + ".json";
+       Path =  Application.persistentDataPath + string.Format("/RL{0}.json", FileNo);
+
 
         actions = 13;
         states = 26;

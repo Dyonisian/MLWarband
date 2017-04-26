@@ -2641,12 +2641,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!114 &114298099205058700
 MonoBehaviour:
@@ -2733,12 +2733,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 114938280508123746}
   IsNeat: 1
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 114514972106648120}
 --- !u!114 &114938280508123746
 MonoBehaviour:
@@ -2782,8 +2782,12 @@ MonoBehaviour:
   BlockUp: {fileID: 1780072407493404}
   BlockDown: {fileID: 1623097874543074}
   AudioScript: {fileID: 0}
-  Health: 50
+  Health: 100
   RetreatChance: 0
+  IsDead: 0
+  LockOn: 0
+  HealthBar: {fileID: 0}
+  Path: 
   ActionCooldown: 0
   OpponentScript: {fileID: 0}
   IsSeeking: 0
