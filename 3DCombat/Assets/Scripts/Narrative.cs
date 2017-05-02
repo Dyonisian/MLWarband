@@ -25,9 +25,16 @@ public class Narrative : MonoBehaviour {
 	}
     public void DisplayText()
     {
-        DialogNo++;
-        if(DialogNo<9)
-        DialogText.text = Dialog[DialogNo];
-        InstructionText.SetActive(true);
+        if (DialogNo < 9)
+        {
+            DialogNo++;
+
+            DialogText.text = Dialog[DialogNo];
+            InstructionText.SetActive(true);
+        }
+        else
+        {
+            InstructionText.SetActive(false);
+        }
     }
 }

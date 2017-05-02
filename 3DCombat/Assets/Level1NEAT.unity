@@ -842,6 +842,18 @@ Prefab:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1534152933945464, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1073104528730396, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1198594613887896, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
   m_IsPrefabParent: 0
@@ -10297,12 +10309,12 @@ MonoBehaviour:
   OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
-  MyHits: 0
+  PlayerHits: 0
   MyAttacks: 0
-  MyBlocks: 0
+  EnemyBlocks: 0
   OpponentHits: 0
   OpponentAttacks: 0
-  OpponentBlocks: 0
+  PlayerBlocks: 0
   AudioScript: {fileID: 0}
 --- !u!136 &2126534116
 CapsuleCollider:
