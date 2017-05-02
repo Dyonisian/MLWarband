@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class NextScene : MonoBehaviour
 {
     public GameObject[] Enemies;
+    int RealtimeCount;
     // Use this for initialization
     void Start()
     {
@@ -31,9 +32,41 @@ public class NextScene : MonoBehaviour
             }
             if (count == 0)
             {
-                PlayerPrefs.SetFloat("Health", col.GetComponent<PlayerScript>().Health);
-                PlayerPrefs.Save();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+                if (SceneManager.GetActiveScene().buildIndex == 5)
+                {
+                    if (PlayerPrefs.HasKey("Realtime"))
+                    {
+                        RealtimeCount = PlayerPrefs.GetInt("Realtime");
+                        RealtimeCount++;
+                        if (RealtimeCount >= 3)
+                        {
+                            PlayerPrefs.SetInt("Realtime", 0);
+                            PlayerPrefs.SetFloat("Health", col.GetComponent<PlayerScript>().Health);
+                            PlayerPrefs.Save();
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                        }
+                        else
+                        {
+                            PlayerPrefs.SetInt("Realtime", RealtimeCount);
+                            PlayerPrefs.SetFloat("Health", col.GetComponent<PlayerScript>().Health);
+                            PlayerPrefs.Save();
+                            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        }
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("Realtime", 1);
+                        PlayerPrefs.SetFloat("Health", col.GetComponent<PlayerScript>().Health);
+                        PlayerPrefs.Save();
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                    }
+                }
+                else
+                {
+                    PlayerPrefs.SetFloat("Health", col.GetComponent<PlayerScript>().Health);
+                    PlayerPrefs.Save();
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+                }
             }
         }
     }

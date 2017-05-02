@@ -1438,6 +1438,9 @@ MonoBehaviour:
   - Only then... Can we truly rest in peace...
   - Attack - Left Mouse Button. Block - Right Mouse Button. You attack and block in
     the direction you are moving.
+  - Press the right arrow key followed by the left mouse button to execute a slash
+    attack from the right to the left. Attacks in other directions work similarly.
+  - When fighting an enemy, press "Tab" to lock on to it
   - Practice your attacks on the logs. The blue fire signals where the Enemy is blocking.
     Find the opening. When you're ready, walk into the green sphere.
   DialogText: {fileID: 155265776}
