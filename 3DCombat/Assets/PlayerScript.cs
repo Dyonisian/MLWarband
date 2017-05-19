@@ -83,7 +83,7 @@ public class PlayerScript : MonoBehaviour
 
     public GameObject Enemy;
 
-    protected bool HumanPlayer;
+    protected bool IsHuman;
     [SerializeField]
 
     public EnemyScript EScript;
@@ -113,10 +113,16 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField]
     Slider HealthBar;
+    [SerializeField]
+    Image HealthImage;
 
     [SerializeField]
     string Path;
 
+    protected bool IsPaused;
+    [SerializeField]
+    protected GameObject[] Waypoints;
+    protected GameObject Target;
     public class Stats
     {
         public string Name;
@@ -127,7 +133,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         PState = State.Idle;
-        HumanPlayer = true;
+        IsHuman = true;
        
         m_CapsuleHeight = m_Capsule.height;
         m_CapsuleCenter = m_Capsule.center;
@@ -145,18 +151,56 @@ public class PlayerScript : MonoBehaviour
             Health = PlayerPrefs.GetFloat("Health");
         }
         Path = "Assets/PlayerData"  + ".json";
+        if(!HealthImage)
+        {
+            HealthImage = GameObject.Find("Fill").GetComponent<Image>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (IsPaused)
+        {
+            if (Target)
+            {
+                if ((Target.transform.position - transform.position).magnitude <= 1)
+                {
+                    m_Rigidbody.velocity = Vector3.zero;
+                }
+            }
+            return;
+        }
+        else
+        {
+            m_Rigidbody.drag = 0.0f;
+        }
+        if (PState != State.Hit && Input.GetButtonDown("Fire1") && PState != State.BlockDown && PState != State.BlockUp && PState != State.BlockLeft && PState != State.BlockRight)
+        {
+            DebugTimer = 0.0f;
+            //Ensure that attack can only be made from certain states
+            if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight || PState == State.Attack1 || PState == State.Attack2 || PState == State.Attack3 || PState == State.Attack4)
+            {
+                if (Warband)
+                {
+                    //Gets attack input and plays correct animation
+                    ActionWarbandAttack();
+                }
+            }
+        }
 
     }
     void FixedUpdate()
     {
-       
+        if (IsDead)
+            return;
+      
         HealthBar.value = Health;
+        if(Health<=15)
+        {
+            HealthImage.color = Color.red;
+        }
+        
         //For debug purposes
         //StateText.text = PState.ToString();
         //DirectionText.text = PDirection.ToString();
@@ -164,6 +208,20 @@ public class PlayerScript : MonoBehaviour
         
         Invincibility -= Time.deltaTime;
         //Set PState according to Mecanim State machine state
+
+        //Set State back to idle once an attack animation completes
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.GetBool("Attack1") && !AnimationControl.GetBool("Attack2") && !AnimationControl.GetBool("Attack3") && !AnimationControl.GetBool("Attack4"))
+        {
+            PState = State.Idle;
+            //Ensure the "hit" animation only plays once
+            AnimationControl.SetBool("Attack1", false);
+            AnimationControl.SetBool("Attack2", false);
+            AnimationControl.SetBool("Attack3", false);
+            AnimationControl.SetBool("Attack4", false);
+
+
+        }
+
         if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack4") )
         {
             PState = State.Attack4;
@@ -184,16 +242,9 @@ public class PlayerScript : MonoBehaviour
             PState = State.Attack1;
             AnimationControl.SetBool("Attack1", false);
         }
-        //Set State back to idle once an attack animation completes
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
-        {
-            PState = State.Idle;
-            //Ensure the "hit" animation only plays once
-           
+        
 
-        }
-
-        if (!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
         {
             //Ensure the "hit" animation only plays once
             if (AnimationControl.GetBool("Hit"))
@@ -228,8 +279,10 @@ public class PlayerScript : MonoBehaviour
 
 
         }
+        if (IsPaused)
+            return;
         //Allow input and actions if not being hit by enemy
-        if (PState != State.Hit)
+        if (PState != State.Hit )
         {
             h = CrossPlatformInputManager.GetAxis("Horizontal");
             v = CrossPlatformInputManager.GetAxis("Vertical");
@@ -263,19 +316,7 @@ public class PlayerScript : MonoBehaviour
                 }
             }
             //Attack input
-            if (Input.GetButtonDown("Fire1"))
-            {
-                DebugTimer = 0.0f;
-                //Ensure that attack can only be made from certain states
-                if (PState == State.Idle || PState == State.Walk || PState == State.Jump || PState == State.BlockUp || PState == State.BlockDown || PState == State.BlockLeft || PState == State.BlockRight || PState == State.Attack1 || PState == State.Attack2 || PState == State.Attack3 || PState == State.Attack4)
-                {
-                    if (Warband)
-                    {
-                        //Gets attack input and plays correct animation
-                        ActionWarbandAttack();
-                    }                    
-                }                
-            }
+            
             //If player isn't trying to attack or block, set the correct states
             //Play correct animations when not in an attack/block state
             if (PState != State.Attack1 && PState != State.Attack2 && PState != State.Attack3 && PState != State.Attack4 && PState != State.BlockUp && PState != State.BlockDown && PState != State.BlockLeft && PState != State.BlockRight)
@@ -360,7 +401,7 @@ public class PlayerScript : MonoBehaviour
         m_Rigidbody.AddForce(extraGravityForce);
 
         m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
-        if (HumanPlayer)
+        if (IsHuman)
             PState = State.Jump;
         m_Rigidbody.velocity = new Vector3(m_ForwardAmount.x, m_Rigidbody.velocity.y, m_ForwardAmount.z);
 
@@ -547,7 +588,7 @@ public class PlayerScript : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             
-                if (Health < 0)
+                if (Health <= 0)
                 {
                 Health = 100;
                     Die();
@@ -564,12 +605,16 @@ public class PlayerScript : MonoBehaviour
         GetComponent<CapsuleCollider>().enabled = false;
         IsDead = true;
         AnimationControl.Play("Death");
-        if (!HumanPlayer)
+        if (!IsHuman)
         {
             SaveStats(gameObject.name, MySword, Enemy.GetComponent<PlayerScript>().MySword);
             Destroy(gameObject, 3.0f);
 
             
+        }
+        else
+        {
+
         }
     }
     public void SaveStats(string Name, SwordScript OpponentSword, SwordScript PSword)
@@ -594,6 +639,54 @@ public class PlayerScript : MonoBehaviour
 
         PSword.PlayerHits = 0;
 
+    }
+    public void Pause()
+    {
+        IsPaused = true;
+    }
+    public void Resume()
+    {
+        IsPaused = false;
+    }
+    public void Knockback()
+    {
+        float maxRot = 0.0f;
+        Target = this.gameObject;
+        foreach(GameObject way in Waypoints)
+        {
+            if(transform.rotation.eulerAngles.y - way.transform.rotation.eulerAngles.y > maxRot)
+            {
+                Target = way;
+            }
+            
+        }
+
+        if (IsHuman)
+        {
+            PState = State.Idle;
+            AnimationControl.Play("Idle");
+            EScript.Hit = true;
+
+            AnimationControl.SetBool("Hit", true);
+
+        }
+        else
+        {
+            AnimationControl.SetBool("Hit", false);
+            Hit = false;
+            AnimationControl.Play("Attack1");
+
+
+        }
+        AnimationControl.SetBool("Attack1", false);
+        AnimationControl.SetBool("Attack2", false);
+        AnimationControl.SetBool("Attack3", false);
+        AnimationControl.SetBool("Attack4", false);
+        Vector3 force = (Target.transform.position - transform.position);
+        force.Normalize();
+        force *= 1500;
+        m_Rigidbody.AddForce(new Vector3(force.x,10,force.z));
+        m_Rigidbody.drag = 1.5f;
     }
     //Attack Combo coroutine was used for old combat system
     /*

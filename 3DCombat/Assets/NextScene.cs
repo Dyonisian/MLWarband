@@ -32,7 +32,7 @@ public class NextScene : MonoBehaviour
             }
             if (count == 0)
             {
-                if (SceneManager.GetActiveScene().buildIndex == 5)
+                if (SceneManager.GetActiveScene().buildIndex == 77)
                 {
                     if (PlayerPrefs.HasKey("Realtime"))
                     {

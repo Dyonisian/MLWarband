@@ -121,7 +121,7 @@ public class ReinforcementLearning : MonoBehaviour
         RewardReceived = false;
         InitialExploration = Exploration;
        // Path = "Assets/RL" + FileNo + ".json";
-       Path =  Application.persistentDataPath + string.Format("/RL{0}.json", FileNo);
+       Path =  Application.streamingAssetsPath + string.Format("/RL{0}.json", FileNo);
 
 
         actions = 13;
@@ -150,6 +150,10 @@ public class ReinforcementLearning : MonoBehaviour
           
             LoadData();
             
+        }
+        if(PlayMode)
+        {
+            Path = Application.streamingAssetsPath + string.Format("/RLRealtime.json");
         }
         
 

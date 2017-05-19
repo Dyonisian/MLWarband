@@ -10,6 +10,8 @@ public class PotionScript : MonoBehaviour {
     PlayerScript PScript;
     [SerializeField]
     Text PotionText;
+    [SerializeField]
+    Image HealthImage;
 
     [SerializeField]
     int PotionCount;
@@ -26,7 +28,12 @@ public class PotionScript : MonoBehaviour {
             PotionCount = PlayerPrefs.GetInt("Potions");
         }
         PotionText.text = "x" + PotionCount;
-	}
+
+        if (!HealthImage)
+        {
+            HealthImage = GameObject.Find("Fill").GetComponent<Image>();
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -40,6 +47,7 @@ public class PotionScript : MonoBehaviour {
                 PlayerPrefs.Save();
                 PScript.Health = 100;
                 PotionText.text = "x" + PotionCount;
+                HealthImage.color = Color.green;
 
             }
 

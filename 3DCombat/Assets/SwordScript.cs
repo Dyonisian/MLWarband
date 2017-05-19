@@ -3,6 +3,7 @@ using System.Collections;
 
 public class SwordScript : MonoBehaviour {
     public ParticleSystem Particles;
+    public GameObject EnemyBlood;
     [SerializeField]
     PlayerScript MyPScript;
     [SerializeField]
@@ -71,10 +72,14 @@ public class SwordScript : MonoBehaviour {
                     if (OpponentScript.Invincibility <= 0.0f)
                     {
                         OpponentScript.Invincibility = 0.2f;
-                        OpponentScript.Hit = true;
+                       
                         OpponentScript.Health -= 10;
-                        
+                        OpponentScript.Hit = true;
+
                     }
+                    GameObject blood = Instantiate(EnemyBlood, col.transform.position + Vector3.up, Random.rotation);
+                    Destroy(blood, 1.0f);
+                    
                     PlayerHits++;
                 }
                 else if (col.CompareTag("EnemySword"))
@@ -162,4 +167,5 @@ public class SwordScript : MonoBehaviour {
         Particles.Stop();
         
     }
+   
 }

@@ -441,7 +441,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 130607397}
   m_LocalRotation: {x: -0, y: -0.28786615, z: -0, w: 0.9576707}
-  m_LocalPosition: {x: 63.7, y: -2.619, z: -23.82}
+  m_LocalPosition: {x: 67.1, y: -2.619, z: -28.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -854,6 +854,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114058460873039694, guid: 2777831cc8795c841ae6eebdd6492b97,
+        type: 2}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
   m_IsPrefabParent: 0
@@ -940,6 +945,12 @@ Prefab:
       propertyPath: PScript
       value: 
       objectReference: {fileID: 403280616}
+    - target: {fileID: 114722281840677198, guid: 6ade5ed1ddee413489a9ceb605d141b3,
+        type: 2}
+      propertyPath: EnemyBlood
+      value: 
+      objectReference: {fileID: 1938818010960792, guid: fc9ca3ea888930a488684a159d000b75,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_IsPrefabParent: 0
@@ -10303,6 +10314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 1993734074}
+  EnemyBlood: {fileID: 0}
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}

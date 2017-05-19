@@ -50,8 +50,8 @@ public class Optimizer : MonoBehaviour {
 
         experiment.Initialize("NeatAI", xmlConfig.DocumentElement, NUM_INPUTS, NUM_OUTPUTS);
 
-        champFileSavePath = Application.persistentDataPath + string.Format("/{0}.champ.xml", "NeatAI"+PathIdentifier);
-        popFileSavePath = Application.persistentDataPath + string.Format("/{0}.pop.xml", "NeatAI" + PathIdentifier);       
+        champFileSavePath = Application.streamingAssetsPath + string.Format("/{0}.champ.xml", "NeatAI"+PathIdentifier);
+        popFileSavePath = Application.streamingAssetsPath + string.Format("/{0}.pop.xml", "NeatAI" + PathIdentifier);       
 
         print(champFileSavePath);
         IsEnemySpawned = false;

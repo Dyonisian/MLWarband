@@ -38,6 +38,10 @@ public class EnemyScript : PlayerScript {
     bool ReactionMode;
     float InitialCooldown;
     public bool IsNEAT;
+    int Phase;
+    [SerializeField]
+    bool IsRealtime;
+    bool Alert;
 	// Use this for initialization
 	void Start () {
         InitialCooldown = 0.5f;
@@ -52,7 +56,7 @@ public class EnemyScript : PlayerScript {
         //m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         //StartCoroutine("AttackCombo");
-        HumanPlayer = false;
+        IsHuman = false;
         BlockLeft.SetActive(false);
         BlockRight.SetActive(false);
         BlockUp.SetActive(false);
@@ -66,7 +70,8 @@ public class EnemyScript : PlayerScript {
         StartCoroutine("Walk");
         StartCoroutine(CheckHealth());
         IsDead = false;
-
+        Phase = 0;
+        Alert = false;
     }
 
     // Update is called once per frame
@@ -84,7 +89,30 @@ public class EnemyScript : PlayerScript {
             Destroy(gameObject);
         if (IsDead)
             return;
+        m_Direction = Enemy.transform.position - transform.position;
+        CurrentDistance = m_Direction.magnitude;
 
+        if (CurrentDistance <= 15)
+        {
+            Alert = true;
+        }
+        if (!Alert)
+            return;
+        if (IsPaused)
+        {
+            if (Target)
+            {
+                if ((Target.transform.position - transform.position).magnitude <= 1)
+                {
+                    m_Rigidbody.velocity = Vector3.zero;
+                }
+            }
+            return;
+        }
+        else
+        {
+            m_Rigidbody.drag = 0.0f;
+        }
         //StateText.text = PState.ToString();
         DebugTimer += Time.deltaTime;
         Invincibility -= Time.deltaTime;
@@ -96,34 +124,10 @@ public class EnemyScript : PlayerScript {
             LastAnimation = CurrentAnimation;
             CurrentAnimation = AnimationControl.GetCurrentAnimatorStateInfo(0).fullPathHash;
         }
-
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack4"))
-        {
-            PState = State.Attack4;
-            LastStateWasAttack = true;
-            AnimationControl.SetBool("Attack4", false);
-        }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack3"))
-        {
-            PState = State.Attack3;
-            LastStateWasAttack = true;
-            AnimationControl.SetBool("Attack3", false);
-        }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack2"))
-        {
-            PState = State.Attack2;
-            LastStateWasAttack = true;
-            AnimationControl.SetBool("Attack2", false);
-        }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
-        {
-            PState = State.Attack1;
-            LastStateWasAttack = true;
-            AnimationControl.SetBool("Attack1", false);
-        }
-        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.IsInTransition(0))
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Idle") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.0f && !AnimationControl.GetBool("Attack1") && !AnimationControl.GetBool("Attack2") && !AnimationControl.GetBool("Attack3") && !AnimationControl.GetBool("Attack4"))
         {
             PState = State.Idle;
+
             /*
             if(SetOnce)
             {
@@ -133,10 +137,39 @@ public class EnemyScript : PlayerScript {
                 SetOnce = false;
             }
             */
-            
+            AnimationControl.SetBool("Attack1", false);
+            AnimationControl.SetBool("Attack2", false);
+            AnimationControl.SetBool("Attack3", false);
+            AnimationControl.SetBool("Attack4", false);
+
 
         }
-        if (!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack4") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.50f)
+        {
+            PState = State.Attack4;
+            LastStateWasAttack = true;
+            AnimationControl.SetBool("Attack4", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack3") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.50f)
+        {
+            PState = State.Attack3;
+            LastStateWasAttack = true;
+            AnimationControl.SetBool("Attack3", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack2") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.50f)
+        {
+            PState = State.Attack2;
+            LastStateWasAttack = true;
+            AnimationControl.SetBool("Attack2", false);
+        }
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Attack1") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.50f)
+        {
+            PState = State.Attack1;
+            LastStateWasAttack = true;
+            AnimationControl.SetBool("Attack1", false);
+        }
+        
+        if (AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit") && AnimationControl.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.00f && !AnimationControl.IsInTransition(0))
         {
             //Ensure the "hit" animation only plays once
             if (AnimationControl.GetBool("Hit"))
@@ -150,12 +183,19 @@ public class EnemyScript : PlayerScript {
                     SetACOnce = true;
                     SetOnce = false;
                 }
+                /*
                 if(Random.Range(1,101)<=RetreatChance)
                 {
                     v = Random.Range(RetreatChance * 0.01f, 1) * (-1.0f);
                 }
+                */
             
             }
+
+        }
+        if(!AnimationControl.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+        {
+            AnimationControl.speed = 1.0f;
 
         }
 
@@ -167,9 +207,12 @@ public class EnemyScript : PlayerScript {
             BlockDown.SetActive(false);
             BlockLeft.SetActive(false);
             BlockRight.SetActive(false);
+
             
-           
             AnimationControl.Play("Hit");
+           
+                AnimationControl.speed = 0.9f;
+            
             AnimationControl.SetBool("Hit",true);
             AnimationControl.SetBool("Block", false);
             AnimationControl.SetBool("Attack1", false);
@@ -689,6 +732,7 @@ public class EnemyScript : PlayerScript {
                 TargetRotation = SeekRotation;
 
             }
+            if(Alert)
             transform.rotation = TargetRotation;
             
             // Debug.Log(m_Move);
@@ -732,7 +776,45 @@ public class EnemyScript : PlayerScript {
         {
             yield return new WaitForFixedUpdate();
            
-                if (Health < 0)
+            if(IsRealtime)
+            {
+                if(Health ==150 && Phase==0)
+                {
+                    Phase++;
+                    GameObject.Find("DialogText").GetComponent<Narrative>().DisplayText();
+                    Debug.Log("Changing phase");
+                    OpponentScript.Pause();
+
+                    Pause();
+                }
+                if (Health == 100 && Phase == 1)
+                {
+                    Phase = 2;
+                    Pause();
+                    OpponentScript.Pause();
+                    OpponentScript.Knockback();
+                    Knockback();
+                    GameObject.Find("DialogText").GetComponent<Narrative>().DisplayText();
+                    Debug.Log("Changing phase");
+
+
+                }
+                else if (Health == 50 && Phase == 2)
+                {
+                    Phase = 3;
+                    Pause();
+                    OpponentScript.Pause();
+                    OpponentScript.Knockback();
+                    Knockback();
+                    GameObject.Find("DialogText").GetComponent<Narrative>().DisplayText();
+                    Debug.Log("Changing phase");
+
+
+
+                }
+            }
+            
+                if (Health <= 0)
                 {
                     if (IsReinforcementLearning)
                     {

@@ -1307,6 +1307,12 @@ Prefab:
       propertyPath: PScript
       value: 
       objectReference: {fileID: 403280616}
+    - target: {fileID: 114722281840677198, guid: 6ade5ed1ddee413489a9ceb605d141b3,
+        type: 2}
+      propertyPath: EnemyBlood
+      value: 
+      objectReference: {fileID: 1938818010960792, guid: fc9ca3ea888930a488684a159d000b75,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 82672249883727822, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
@@ -6090,6 +6096,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1073104528730396, guid: 2777831cc8795c841ae6eebdd6492b97, type: 2}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114058460873039694, guid: 2777831cc8795c841ae6eebdd6492b97,
+        type: 2}
+      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -17929,6 +17940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 1993734074}
+  EnemyBlood: {fileID: 0}
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
