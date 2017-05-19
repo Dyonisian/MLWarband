@@ -26,7 +26,7 @@ public class NeatScript : UnitController
             //If not on cooldown, take action
 
             
-            if (PState != PlayerScript.State.Hit && MyEnemyScript.ActionCooldown < 0.0f)
+            if (MyEnemyScript.GetState() != PlayerScript.State.Hit && MyEnemyScript.ActionCooldown < 0.0f)
             {
                 LS = MyEnemyScript.BuildLearningState();
                 PState = LS.PState;

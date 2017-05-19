@@ -121,8 +121,11 @@ using UnityStandardAssets.CrossPlatformInput;
 
             if (LockOn)
             {
+            if (PScript.Enemy)
+            {
                 m_Direction = PScript.Enemy.transform.position - transform.position;
                 transform.rotation = Quaternion.LookRotation(m_Direction);
+            }
             }
         }
     }

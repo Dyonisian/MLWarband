@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class EnemyScriptNeat : PlayerScript
 {
@@ -54,7 +55,7 @@ public class EnemyScriptNeat : PlayerScript
         //m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
         m_OrigGroundCheckDistance = m_GroundCheckDistance;
         //StartCoroutine("AttackCombo");
-        HumanPlayer = false;
+        IsHuman = false;
         BlockLeft.SetActive(false);
         BlockRight.SetActive(false);
         BlockUp.SetActive(false);
@@ -68,6 +69,7 @@ public class EnemyScriptNeat : PlayerScript
         StartCoroutine("Walk");
         StartCoroutine("CheckHealth");
         IsDead = false;
+        //StateText = GameObject.Find("EnemyStateText").GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -78,6 +80,7 @@ public class EnemyScriptNeat : PlayerScript
     void FixedUpdate()
     {
         //Give a short cooldown for enemy and scripts to be assigned, required during training
+        //StateText.text = PState.ToString();
         InitialCooldown -= Time.deltaTime;
         if (InitialCooldown > 0.0f)
             return;
@@ -89,7 +92,7 @@ public class EnemyScriptNeat : PlayerScript
         m_Direction = Enemy.transform.position - transform.position;
         CurrentDistance = m_Direction.magnitude;
 
-        if (CurrentDistance <= 20)
+        if (CurrentDistance <= 15)
         {
             Alert = true;
         }
@@ -171,6 +174,9 @@ public class EnemyScriptNeat : PlayerScript
 
             AnimationControl.Play("Hit");
             AnimationControl.SetBool("Hit", true);
+
+            StartCoroutine(TurnHitBoolOff());
+
             AnimationControl.SetBool("Block", false);
             AnimationControl.SetBool("Attack1", false);
             AnimationControl.SetBool("Attack2", false);
@@ -181,7 +187,7 @@ public class EnemyScriptNeat : PlayerScript
             v = 0;
             StartCoroutine("Walk");
             ActionCooldown = 3.0f;
-            if (transform.root.CompareTag("Enemy"))
+            //if (transform.root.CompareTag("Enemy"))
                 Hit = false;
             Invincibility = 0.1f;
             //This is for the fitness of the neural network, for NEAT
@@ -693,6 +699,23 @@ public class EnemyScriptNeat : PlayerScript
     {
         NScript.OpponentBlocks = NScript.OpponentBlocks + h;
 
+    }
+
+    public IEnumerator TurnHitBoolOff()
+    {
+        yield return new WaitForSeconds(0.2f);
+        if (AnimationControl.GetBool("Hit"))
+        {
+            AnimationControl.SetBool("Hit", false);
+            if (SetOnce)
+            {
+                ActionCooldown = 0.0f;
+
+                SetACOnce = true;
+                SetOnce = false;
+            }
+
+        }
     }
    
 }
