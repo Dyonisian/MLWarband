@@ -25,6 +25,9 @@ public class SwordScript : MonoBehaviour {
     [SerializeField]
     SwordAudio AudioScript;
 
+    [SerializeField]
+    bool IsTrainingMode;
+
     // Use this for initialization
     void Start () {
 	
@@ -36,7 +39,10 @@ public class SwordScript : MonoBehaviour {
 	}
     void OnTriggerEnter(Collider col)
     {
-        AudioScript.PlayHit();
+        if (!IsTrainingMode)
+        {
+            AudioScript.PlayHit();
+        }
         if (MyPScript.GetState() == PlayerScript.State.Attack1 || MyPScript.GetState() == PlayerScript.State.Attack2 || MyPScript.GetState() == PlayerScript.State.Attack3 || MyPScript.GetState() == PlayerScript.State.Attack4)
         {
             if (transform.root.CompareTag ("Player"))
@@ -67,8 +73,11 @@ public class SwordScript : MonoBehaviour {
                 }
                 else if (col.CompareTag("Enemy"))
                 {
-                    Particles.Play();
-                    StopParticles();
+                    if (!IsTrainingMode)
+                    {
+                        Particles.Play();
+                        StopParticles();
+                    }
                     if (OpponentScript.Invincibility <= 0.0f)
                     {
                         OpponentScript.Invincibility = 0.2f;
@@ -77,17 +86,22 @@ public class SwordScript : MonoBehaviour {
                         OpponentScript.Hit = true;
 
                     }
-                    GameObject blood = Instantiate(EnemyBlood, col.transform.position + Vector3.up, Random.rotation);
-                    Destroy(blood, 1.0f);
+                    if (!IsTrainingMode)
+                    {
+                        GameObject blood = Instantiate(EnemyBlood, col.transform.position + Vector3.up, Random.rotation);
+                        Destroy(blood, 1.0f);
+                    }
                     
                     PlayerHits++;
                 }
                 else if (col.CompareTag("EnemySword"))
                 {
                     //Destroy(col.gameObject);
-
-                    Particles.Play();
-                    StopParticles();
+                    if (!IsTrainingMode)
+                    {
+                        Particles.Play();
+                        StopParticles();
+                    }
                 }
             }
             else //AI Sword, not player's
@@ -119,8 +133,11 @@ public class SwordScript : MonoBehaviour {
                 }
                 else if (col.CompareTag("Player"))
                 {
-                    Particles.Play();
-                    StopParticles();
+                    if (!IsTrainingMode)
+                    {
+                        Particles.Play();
+                        StopParticles();
+                    }
                     if (OpponentScript.Invincibility <= 0.0f )
                     {
                         OpponentScript.Invincibility = 0.2f;
@@ -153,9 +170,11 @@ public class SwordScript : MonoBehaviour {
                 else if (col.CompareTag("PlayerSword"))
                 {
                     //Destroy(col.gameObject);
-
-                    Particles.Play();
-                    StopParticles();
+                    if (!IsTrainingMode)
+                    {
+                        Particles.Play();
+                        StopParticles();
+                    }
                 }
 
             }

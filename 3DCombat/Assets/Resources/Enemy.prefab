@@ -1450,7 +1450,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1911093194270936}
   m_LocalRotation: {x: -0.7071068, y: 0.00003515305, z: -0.000032672895, w: 0.7071068}
-  m_LocalPosition: {x: 0.509, y: -0.575, z: -0.064}
+  m_LocalPosition: {x: 0.483, y: -0.575, z: -0.006}
   m_LocalScale: {x: 0.37447998, y: 0.37448022, z: 0.16127011}
   m_Children: []
   m_Father: {fileID: 4217122658257198}
@@ -1522,7 +1522,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1035887800330544}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.096981384, y: 0, z: -8.44}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4217122658257198}
@@ -1889,7 +1889,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1986801132983914}
   m_LocalRotation: {x: -0.7071081, y: 0.000033912824, z: -0.7071056, w: -0.000033913122}
-  m_LocalPosition: {x: -0.471, y: 0.767, z: -0.054}
+  m_LocalPosition: {x: -0.471, y: 0.8, z: -0.032}
   m_LocalScale: {x: 0.37448022, y: 0.3744807, z: 0.16127011}
   m_Children: []
   m_Father: {fileID: 4217122658257198}
@@ -2050,7 +2050,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1714949064847748}
   m_LocalRotation: {x: -0.7071068, y: 0.00003515305, z: -0.000032672895, w: 0.7071068}
-  m_LocalPosition: {x: -0.499, y: -0.575, z: -0.005}
+  m_LocalPosition: {x: -0.581, y: -0.575, z: -0.05}
   m_LocalScale: {x: 0.37447998, y: 0.37448022, z: 0.16127011}
   m_Children: []
   m_Father: {fileID: 4217122658257198}
@@ -2516,11 +2516,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 198003239187836316}
+  EnemyBlood: {fileID: 0}
   MyPScript: {fileID: 0}
   MyEnemyScript: {fileID: 0}
   OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
+  PlayerHits: 0
+  MyAttacks: 0
+  EnemyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  PlayerBlocks: 0
+  AudioScript: {fileID: 0}
+  IsTrainingMode: 0
 --- !u!114 &114910161868278186
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2533,11 +2543,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Particles: {fileID: 198003239187836316}
+  EnemyBlood: {fileID: 0}
   MyPScript: {fileID: 114935017212789478}
   MyEnemyScript: {fileID: 114935017212789478}
   OpponentScript: {fileID: 0}
+  OpponentNeatScript: {fileID: 0}
   MyEnemyScriptNeat: {fileID: 0}
   IsNeat: 0
+  PlayerHits: 0
+  MyAttacks: 0
+  EnemyBlocks: 0
+  OpponentHits: 0
+  OpponentAttacks: 0
+  PlayerBlocks: 0
+  AudioScript: {fileID: 0}
+  IsTrainingMode: 1
 --- !u!114 &114935017212789478
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2558,15 +2578,16 @@ MonoBehaviour:
   m_AnimSpeedMultiplier: 1
   m_GroundCheckDistance: 0.1
   m_Rigidbody: {fileID: 54664697414677660}
-  MySword: {fileID: 114910161868278186}
   m_Capsule: {fileID: 136330951804552506}
   Hit: 0
   AnimationControl: {fileID: 95101251317229900}
+  MySword: {fileID: 114910161868278186}
   SwordAnim: {fileID: 0}
   Attack1: {fileID: 0}
   Invincibility: 0
   m_MoveBlock: 2
   m_MoveNormal: 4
+  v: 0
   PState: 0
   StateText: {fileID: 0}
   DirectionText: {fileID: 0}
@@ -2578,16 +2599,27 @@ MonoBehaviour:
   BlockRight: {fileID: 1911093194270936}
   BlockUp: {fileID: 1986801132983914}
   BlockDown: {fileID: 1922738251788068}
+  AudioScript: {fileID: 0}
+  Health: 1000000
+  RetreatChance: 0
+  IsDead: 0
+  LockOn: 0
+  HealthBar: {fileID: 0}
+  HealthImage: {fileID: 0}
+  Path: 
+  Waypoints: []
   ActionCooldown: 0
   OpponentScript: {fileID: 0}
   IsSeeking: 0
   HitDistance: 0
   CurrentDistance: 0
   CanHit: 0
+  SetACOnce: 0
   RLScript: {fileID: 0}
   RLMoveScript: {fileID: 0}
   IsReinforcementLearning: 0
   IsNEAT: 0
+  IsRealtime: 0
 --- !u!136 &136035899241072028
 CapsuleCollider:
   m_ObjectHideFlags: 1

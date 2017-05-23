@@ -131,6 +131,8 @@ public class NeatScript : UnitController
             */
         if (fit < 0 )
             fit = 0;
+        if (myHitsNew == 0)
+            fit = 0;
 
         return fit;
     }

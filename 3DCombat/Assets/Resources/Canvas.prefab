@@ -789,6 +789,9 @@ MonoBehaviour:
     Find the opening. When you're ready, walk into the green sphere.
   DialogText: {fileID: 114167947844257986}
   InstructionText: {fileID: 1414072731842270}
+  EScript: {fileID: 0}
+  PScript: {fileID: 0}
+  BoxImage: {fileID: 0}
 --- !u!114 &114694810996667376
 MonoBehaviour:
   m_ObjectHideFlags: 1
