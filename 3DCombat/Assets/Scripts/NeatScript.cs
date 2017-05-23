@@ -72,7 +72,15 @@ public class NeatScript : UnitController
         myHitsCopy = MyHits;
         
 
-    
+        while((float)(myHitsCopy / 2.0f)>0)
+        {
+            modulus = myHitsCopy % 2;
+            if (modulus == 0)
+                modulus = 2;
+            myHitsNew += modulus * modifier;
+            modifier *= 0.5f;
+            myHitsCopy -= 2;
+        }
 
         
 
@@ -84,26 +92,6 @@ public class NeatScript : UnitController
 
         if (dodge == 0)
             dodge = 1;
-
-
-        fit = Mathf.Log(1 + MyHits) + Mathf.Log(1 + dodge) + Mathf.Log(1 + MyBlocks);
-
-        if (Random.Range(0.0f, 1.0f) <= 0.05f)
-        {
-            Debug.Log("My hits: " + MyHits + " Dodge: " + dodge + " Blocks: " + MyBlocks + " Fitness: " + fit);
-        }
-
-        return fit;
-
-        while ((float)(myHitsCopy / 2.0f) > 0)
-        {
-            modulus = myHitsCopy % 2;
-            if (modulus == 0)
-                modulus = 2;
-            myHitsNew += modulus * modifier;
-            modifier *= 0.5f;
-            myHitsCopy -= 2;
-        }
 
         myDodgeCopy = dodge * 0.5f;
         modifier = 1.0f;
@@ -134,7 +122,6 @@ public class NeatScript : UnitController
         if (Random.Range(0.0f, 1.0f) <= 0.05f)
         Debug.Log("My hits: " + myHitsNew + " Dodge: " + myDodgeNew + " Blocks: " + (MyBlocks - OpponentBlocks) + " Miss: " + miss + " Fitness: "+fit);
 
-        //fit = Mathf.Log(1 + MyHits) + Mathf.Log(1 + dodge) + Mathf.Log(1 + MyBlocks);
         //fit *= runHitRatio;
         /*
         if (runHitRatio <= 0.5f)

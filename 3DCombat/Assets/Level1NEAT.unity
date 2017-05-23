@@ -871,7 +871,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4816523946161802, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 126.6
+      value: 104.61
       objectReference: {fileID: 0}
     - target: {fileID: 4816523946161802, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
       propertyPath: m_LocalPosition.y
@@ -879,7 +879,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4816523946161802, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -104.7
+      value: -80.78
       objectReference: {fileID: 0}
     - target: {fileID: 4816523946161802, guid: 6ade5ed1ddee413489a9ceb605d141b3, type: 2}
       propertyPath: m_LocalRotation.x
@@ -2895,6 +2895,70 @@ Prefab:
       propertyPath: AudioScript
       value: 
       objectReference: {fileID: 70095373}
+    - target: {fileID: 4599134857113266, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.471
+      objectReference: {fileID: 0}
+    - target: {fileID: 4599134857113266, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.032
+      objectReference: {fileID: 0}
+    - target: {fileID: 4599134857113266, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4179216187207962, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.483
+      objectReference: {fileID: 0}
+    - target: {fileID: 4179216187207962, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.006
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758363178203978, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -0.581
+      objectReference: {fileID: 0}
+    - target: {fileID: 4758363178203978, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 136059306879079274, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 136074247290608060, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 136091988566991730, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 136361030861476506, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1911093194270936, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_TagString
+      value: EnemyBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714949064847748, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_TagString
+      value: EnemyBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922738251788068, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_TagString
+      value: EnemyBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986801132983914, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
+      propertyPath: m_TagString
+      value: EnemyBlock
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5c0d8a2bbacedbe4ba12a96564bc37a7, type: 2}
   m_IsPrefabParent: 0
@@ -10328,6 +10392,7 @@ MonoBehaviour:
   OpponentAttacks: 0
   PlayerBlocks: 0
   AudioScript: {fileID: 0}
+  IsTrainingMode: 0
 --- !u!136 &2126534116
 CapsuleCollider:
   m_ObjectHideFlags: 0
